@@ -69,7 +69,7 @@
 \newpage
 
 
-\onehalfspacing
+% \onehalfspacing
 % \maketitle
 \tableofcontents % Add table of contents
 \newpage % Start content on a new page
@@ -509,6 +509,73 @@ By repeating this process over multiple iterations and batches of training data,
 
 This iterative process of computing gradients and updating parameters is known as \textit{gradient descent}.
 
+\subsubsection{Momentum}
+
+In order to smooth out the gradient descent and accelerate convergence a \textit{momentum} can be introduced to a sdg algorithm. When introduced the descent direction incorporates a fraction of the previous update step, instead of relying solely on the current gradient.
+
+The momentum update rule is defined as:
+
+\[
+\begin{aligned}
+\mathbf{v}_t &= \gamma \mathbf{v}_{t-1} + \eta \nabla_{\boldsymbol{\theta}} \mathcal{L}(\boldsymbol{\theta}_{t-1}) \\
+\boldsymbol{\theta}_t &= \boldsymbol{\theta}_{t-1} - \mathbf{v}_t
+\end{aligned}
+\]
+
+Here, \( \mathbf{v}_t \) is the velocity vector (accumulated update), \( \gamma \in [0,1) \) is the momentum coefficient, and \( \eta \) is the learning rate. A higher \( \gamma \) allows more influence from previous gradients, leading to smoother and potentially faster convergence.
+
+
+\section{Performance Metrics}
+
+To evaluate the performance of the trained classification models, several metrics were used. These metrics provide complementary insights into different aspects of classification performance, especially in the context of imbalanced data.
+
+\subsection{F1 Score}
+
+The F1 score is the harmonic mean of precision and recall, offering a balanced measure that accounts for both false positives and false negatives. For a binary classification problem, precision and recall are defined as:
+
+\[
+\text{Precision} = \frac{\text{TP}}{\text{TP} + \text{FP}}, \quad
+\text{Recall} = \frac{\text{TP}}{\text{TP} + \text{FN}}
+\]
+
+where TP, FP, and FN denote true positives, false positives, and false negatives, respectively. The F1 score is then given by:
+
+\[
+F_1 = 2 \cdot \frac{\text{Precision} \cdot \text{Recall}}{\text{Precision} + \text{Recall}}
+\]
+
+A higher F1 score indicates better performance, particularly when precision and recall are both high. These metrics are especially relevant when class distribution is skewed or when the cost of false positives and false negatives differs.
+
+\subsection{Confusion Matrix}
+
+The confusion matrix is a tabular summary of classification results. It displays the counts of true positive (TP), false positive (FP), true negative (TN), and false negative (FN) predictions. For a binary classification problem, the confusion matrix is a 2×2 matrix of the form:
+
+\[
+\begin{bmatrix}
+\text{TP} & \text{FN} \\
+\text{FP} & \text{TN}
+\end{bmatrix}
+\]
+
+Each cell corresponds to a specific prediction outcome. From this matrix, additional metrics can be derived. For example, \textit{specificity} measures the true negative rate:
+
+\[
+\text{Specificity} = \frac{\text{TN}}{\text{TN} + \text{FP}}
+\]
+
+Normalizing the matrix enables interpretation in terms of proportions, helping to identify potential biases in the model's predictions.
+
+\subsection{ROC Curve and AUC}
+
+The Receiver Operating Characteristic (ROC) curve illustrates the diagnostic ability of a classifier as its decision threshold is varied. It plots the true positive rate (TPR) against the false positive rate (FPR):
+
+\[
+\text{TPR} = \frac{\text{TP}}{\text{TP} + \text{FN}}, \quad
+\text{FPR} = \frac{\text{FP}}{\text{FP} + \text{TN}}
+\]
+
+The Area Under the Curve (AUC) summarizes the ROC curve in a single scalar value between 0 and 1. An AUC of 0.5 indicates random guessing, while an AUC of 1.0 represents perfect classification.
+
 \section{Convolutional Neural Networks (CNNs)}
 
 % \textit{Source:} \url{file:///C:/Users/wojte/Downloads/s13244-018-0639-9.pdf}
@@ -586,12 +653,6 @@ In classical CNN architectures, the output of the final convolution or pooling l
     \caption{Example of a simple CNN architecture (lenet.pdf) {ADD EXPLENATION}\cite{exCNN}}
 \end{figure}
 
-
-% \begin{figure}[H]
-%     \centering
-%     \includegraphics[width=0.8\textwidth]{src/lenet.pdf}
-%     \caption{Caption for conv2.pdf}
-% \end{figure}
 
 The first layers of the neural network consist of a hierarchy of convolution and pooling layers, each taking the output of the previous layer as input. The output of the final convolutional or pooling layer is then passed to a fully connected layer, which performs the final classification.
 
@@ -690,11 +751,26 @@ Linear & \(2\) & Final output logits \\
 
 \subsection{Model Training Procedure}
 
-Both networks were trained using a common training routine implemented in PyTorch. The training process operated on a combined dataset and dynamically inferred the input dimensions from a sample image. Image preprocessing included optional downscaling using nearest-neighbor interpolation, followed by conversion to tensor format. The models were optimized using stochastic gradient descent (SGD) with a fixed learning rate of 0.0005. Cross-entropy loss was used as the objective function. Training was conducted for 10 epochs (i.e., complete passes through the dataset) with a batch size of 16. During each epoch, loss and classification accuracy were recorded.
+Both networks were trained using a training routine implemented in PyTorch. The training process operated on a combined dataset and dynamically inferred input dimensions from a sample image. Image preprocessing included optional downscaling using nearest-neighbor interpolation, followed by conversion to tensor format. The models were optimized using stochastic gradient descent (SGD) with a fixed learning rate of 0.0005 and a momentum of 0.9. Cross-entropy loss was used as the objective function. Training was conducted for 10 epochs with a batch size of 16. During each epoch, loss and classification accuracy were recorded.
+
+The dataset was split into training, validation, and test sets in a 70/15/15 ratio. Networks were trained on the training set, and their performance was evaluated on the validation set. The best-performing model on the validation set was selected for final evaluation on the test set, which consisted of data the model had no access to previously. Training was conducted separately on the full dataset and on a subset limited to the top 50\% of most energetic lepton interactions. For simplicity, only data from plane2 was used. Input images were scaled down to 0.33 and 0.5 of their original size. Confusion matrices were computed for all trained models, and results were compared. F1 scores and ROC curves were calculated for the best-performing models.
+
+
 
 \section{Results}
+\subsection{performance on the validation set}
 
-The Obtained results were far from satisfactory.
+\subsubsection{LeNet}
+
+\subsubsection{AlexNet}
+
+\subsection{discussion}
+
+- LeNet did not train at all on either of the datasets- all events were classified as just one class
+- Alexnet perforemd significantly better, acheiving satisfactory results for both the full and the top50 datasets.
+- Sclale factor did influenece the performance (the larger the image the better), but not very significantly.
+- scale factor improved the networks ability to correctly classify events where no lepton shower was observerd.
+- the most significant difference in performace between top50 and full can be observed when it comes to proper classification of no lepton interaction events.
 
 \section{Transformer}
 
@@ -890,7 +966,51 @@ The specific transforemer image transformer that ended up being used divided ima
 
 The transformer was trained for up to 10 epochs using a dataset split into training and validation batches. The validation set consisted of 1000 batches taken from the dataset, while the rest was used for training. An Adam optimizer with an exponentially decaying learning rate starting at 0.001 was used, with the learning rate decreasing by 5\% every 10 full passes through the training data. The model optimized a binary cross-entropy loss and tracked accuracy as a metric. Training incorporated early stopping, halting if the validation accuracy did not improve for 10 consecutive epochs.
 
-\section{Transformer results}
+\section{Transformer theirraining and Evaluation Results}
+
+
+\subsection{Training Summary}
+
+The neural network was trained for 10 epochs using an exponentially decaying learning rate schedule. The final training loss reached \textbf{0.5839}, with a training accuracy of \textbf{69.04\%}. Validation performance at the end of training showed a loss of \textbf{0.6139} and an accuracy of \textbf{66.00\%}, which was also the best recorded validation accuracy.
+
+Testing on the held-out dataset yielded a final loss of \textbf{0.6218} and an accuracy of \textbf{66.03\%}, indicating consistent generalization performance.
+
+\subsection{Learning Dynamics}
+
+During training, the loss decreased by \textbf{12.0\%}, and accuracy improved by \textbf{9.75 percentage points}. The training-validation accuracy gap was \textbf{3.04 percentage points}, suggesting low overfitting. Loss fluctuations over the final five epochs were minimal (standard deviation: \textbf{0.0039}), indicating moderate convergence.
+
+\subsection{Classification Metrics}
+
+Evaluation of class-wise performance yielded the following:
+
+\begin{itemize}
+    \item \textbf{Class "CC e"}
+    \begin{itemize}
+        \item Precision: 0.6773
+        \item Recall: 0.6442
+        \item F1-Score: 0.6603
+    \end{itemize}
+    \item \textbf{Class "other"}
+    \begin{itemize}
+        \item Precision: 0.6441
+        \item Recall: 0.6773
+        \item F1-Score: 0.6603
+    \end{itemize}
+\end{itemize}
+
+The overall model achieved an \textbf{AUC-ROC score of 0.7207}, confirming its capacity to discriminate between the two classes effectively.
+
+\subsection{Confusion Matrix}
+
+Figure~\ref{fig:conf_matrix} presents the normalized confusion matrix for the test set. The model correctly classified \textbf{64\%} of "CC e" instances and \textbf{68\%} of "other" instances. Misclassification rates were relatively balanced between the two classes.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.45\textwidth]{src/tranformerMatrixFinal.png}
+    \caption{Normalized confusion matrix showing prediction distribution across classes.}
+    \label{fig:conf_matrix}
+\end{figure}
+
 
 \section{Conclusion}
 
