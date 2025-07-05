@@ -1,5 +1,5 @@
 % filepath: c:\Users\wojte\Desktop\mgr.tex
-\documentclass[12pt]{extarticle}
+\documentclass{pracalicmgr}
 \usepackage[utf8]{inputenc}
 \usepackage{geometry}
 \usepackage{amsmath}
@@ -20,12 +20,46 @@
 \usepackage{amsfonts}
 \usepackage{amssymb}
 \usepackage{graphicx}
-\usepackage[left=2.5cm,right=2.5cm,top=2.5cm,bottom=2.5cm]{geometry}
-\title{Neutrino Detection and Data Processing with CNNs}
-\author{Wojciech Noskowiak\\}
-\date{}
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{} % Clear all headers and footers
+\fancyfoot[R]{\thepage} % Put page number on the right in footer
+\renewcommand{\headrulewidth}{0pt} % Remove header line
+\usepackage[left=2.0cm,right=2.0cm,top=1.5cm,bottom=1.5cm]{geometry}
 
+
+
+\usepackage{wrapfig}
+
+%\linespread{2}
+\raggedbottom
+%\counterwithin{figure}{section}
+
+\author{Wojciech Noskowiak}
+
+\nralbumu{417909}
+
+\title{Calculations of electric dipole moments in two-electron diatomic molecules}
+
+\tytulang{Obliczenia elektrycznych momentów dipolowych dla dwuelektronowych dwuatomowych cząsteczek}
+
+\kierunek{Physics}
+
+%\specjalnosc{Metody jądrowe w fizyce ciała stałego}
+
+\opiekun{\\prof. dr hab. Krzysztof Pachucki\\Chair of quantum optics and atomic physics\\ Institute of Theoretical Physics\\\vspace{0.3cm plus 1.5fill}\\mgr Michał Siłkowski\\Chair of quantum optics and atomic physics\\ Institute of Theoretical Physics\\}
+
+%\dziedzina{13.200}
+\dziedzina{13.2 Fizyka}
+
+\date{September 2022}
+
+\keywords{High-precision calculations, dipole moment, two-electron diatomic molecules, helium hydride ion, Kołos-Wolniewicz, variational method, electronic structure}
+
+\overfullrule=1pt
 \begin{document}
+\maketitle
+\let\cleardoublepage\clearpage
 
 % --- Thesis Title Page ---
 \newgeometry{left=2.5cm,right=2.5cm, top=3cm, bottom=4cm}
@@ -567,14 +601,50 @@ Normalizing the matrix enables interpretation in terms of proportions, helping t
 
 \subsection{ROC Curve and AUC}
 
-The Receiver Operating Characteristic (ROC) curve illustrates the diagnostic ability of a classifier as its decision threshold is varied. It plots the true positive rate (TPR) against the false positive rate (FPR):
+\subsubsection{Receiver Operating Characteristic (ROC)}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{src/roc-curveUp.jpg}
+    \caption{Visualization of the ROC curve. The x-axis represents the false positive rate (FPR), while the y-axis represents the true positive rate (TPR). The diagonal line represents a random classifier, whil the linies above it represent classifiers with varying levels of performance.}
+\end{figure}
+
+The Receiver Operating Characteristic (ROC) curve illustrates the diagnostic ability of a classifier as its decision threshold is varied. 
+
+- for each possible threshold (probability over which an output is assumed to belong to a specific class), the true positive rate (TPR) and false positive rate (FPR) are calculated.
 
 \[
 \text{TPR} = \frac{\text{TP}}{\text{TP} + \text{FN}}, \quad
 \text{FPR} = \frac{\text{FP}}{\text{FP} + \text{TN}}
 \]
 
-The Area Under the Curve (AUC) summarizes the ROC curve in a single scalar value between 0 and 1. An AUC of 0.5 indicates random guessing, while an AUC of 1.0 represents perfect classification.
+
+- each such pair of values is then treated as a point in the 2D space, where the x-axis represents the FPR and the y-axis represents the TPR.
+
+- these values are then plotted.
+
+- In such a setting a perfect classifier would produce a point at (0, 1), indicating no false positives and all true positives, while a random classifier would produce a diagonal line from (0, 0) to (1, 1).
+
+\subsubsection{Area Under the Curve (AUC)}
+
+\begin{figure}[H]
+    \centering
+    \begin{minipage}[t]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{src/auc_0-65.png}
+        % \caption{Caption for conv1.pdf}
+    \end{minipage}
+    \hfill
+    \begin{minipage}[t]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{src/auc_0-93.png}
+        % \caption{Caption for conv2.pdf}
+    \end{minipage}
+    \caption{ROC and AUC of two hypothetical models. The curve on the right, with a greater AUC, represents the better of the two models.}
+\end{figure}
+
+
+The Area Under the Curve (AUC) summarizes the ROC curve in a single scalar value between 0 and 1. An AUC of 0.5 indicates random guessing, while an AUC of 1.0 represents perfect classification. AUC can be interpreted as the probability that the model, if given a randomly chosen positive and negative example, will rank the positive higher than the negative. The model with greater area under the curve is generally the better one.
 
 \section{Convolutional Neural Networks (CNNs)}
 
@@ -645,6 +715,27 @@ A multi-layer perceptron (MLP) is a feed-forward neural network composed of mult
 
 In classical CNN architectures, the output of the final convolution or pooling layer is flattened and passed into a multi-layer perceptron to perform the final classification.
 
+\subsubsection{Output Layer and Thresholding}
+
+In binary classification tasks, the output layer of the multi-layer perceptron contains two neurons, each representing one of the two possible classes. The network produces a pair of output values, which are interpreted as unnormalized logit scores. These scores are typically passed through a softmax function to produce a probability distribution over the two classes:
+
+\[
+\hat{y}_i = \frac{e^{z_i}}{e^{z_0} + e^{z_1}}, \quad i \in \{0, 1\}
+\]
+
+where \( z_0 \) and \( z_1 \) are the logits for each class. The final classification decision is made by selecting the class with the higher probability. Alternatively, a fixed threshold (typically 0.5) can be applied to the output of a single neuron (if using a one-neuron output with a sigmoid activation) to make the decision:
+
+\[
+\text{Class} = 
+\begin{cases}
+1 & \text{if } \hat{y} > 0.5 \\
+0 & \text{otherwise}
+\end{cases}
+\]
+
+The thresholding mechanism allows tuning of the classifier's sensitivity and specificity depending on the application.
+
+
 \subsection{Complete CNN}
 
 \begin{figure}[H]
@@ -701,7 +792,7 @@ The output of the last convolution is flattened into a 120-dimensional vector an
 This architecture is summarized in Table~\ref{tab:lenet_architecture}.
 
 
-\subsection{AlexNet-Inspired CNN}
+\subsection{AlexNet-like CNN}
 
 
 Another architecture utilized was a modified version of the AlexNet model, originally developed for the ImageNet Large Scale Visual Recognition Challenge (ILSVRC). The general hope being that the fact that it's significantly deeper and wider than LeNet would enable classify the images more effectively.
@@ -723,24 +814,24 @@ This architecture is summarized in Table~\ref{tab:alexnet_architecture}.
 Input & \(1 \times H \times W\) & Variable-size input image \\
 \hline
 Conv2d (1 → 64) & Dependent on input & Kernel \(11 \times 11\), stride 4, padding 2 \\
-BatchNorm2d & – & 64 feature maps \\
-MaxPool2d & – & Kernel \(3 \times 3\), stride 2 \\
+BatchNorm2d & - & 64 feature maps \\
+MaxPool2d & - & Kernel \(3 \times 3\), stride 2 \\
 \hline
-Conv2d (64 → 192) & – & Kernel \(5 \times 5\), padding 2 \\
-BatchNorm2d & – & \\
-MaxPool2d & – & Kernel \(3 \times 3\), stride 2 \\
+Conv2d (64 → 192) & - & Kernel \(5 \times 5\), padding 2 \\
+BatchNorm2d & - & \\
+MaxPool2d & - & Kernel \(3 \times 3\), stride 2 \\
 \hline
-Conv2d (192 → 384) & – & Kernel \(3 \times 3\), padding 1 \\
-BatchNorm2d & – & \\
+Conv2d (192 → 384) & - & Kernel \(3 \times 3\), padding 1 \\
+BatchNorm2d & - & \\
 \hline
-Conv2d (384 → 256) & – & Kernel \(3 \times 3\), padding 1 \\
-BatchNorm2d & – & \\
+Conv2d (384 → 256) & - & Kernel \(3 \times 3\), padding 1 \\
+BatchNorm2d & - & \\
 \hline
-Conv2d (256 → 256) & – & Kernel \(3 \times 3\), padding 1 \\
-BatchNorm2d & – & \\
-MaxPool2d & – & Kernel \(3 \times 3\), stride 2 \\
+Conv2d (256 → 256) & - & Kernel \(3 \times 3\), padding 1 \\
+BatchNorm2d & - & \\
+MaxPool2d & - & Kernel \(3 \times 3\), stride 2 \\
 \hline
-Flatten & – & Computed dynamically \\
+Flatten & - & Computed dynamically \\
 Linear & \(4096\) & Fully connected + ReLU + Dropout \\
 Linear & \(4096\) & Fully connected + ReLU + Dropout \\
 Linear & \(2\) & Final output logits \\
@@ -762,15 +853,126 @@ The dataset was split into training, validation, and test sets in a 70/15/15 rat
 
 \subsubsection{LeNet}
 
+\newpage
+
 \subsubsection{AlexNet}
+
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}{\textwidth}
+        \centering
+        \includegraphics[width=0.9\textwidth]{src/AlexCNN_1ch_full_dataset_scale033.png}
+        % \caption{Caption for the first image}
+        \label{fig:full33sub1}
+    \end{subfigure}
+    
+    \vspace{1cm}
+    
+    \begin{subfigure}{\textwidth}
+        \centering
+        \includegraphics[width=0.9\textwidth]{src/AlexCNN_1ch_full_dataset_scale0.33loss.png}
+        \caption{Caption for the second image}
+        \label{fig:full33sub2}
+    \end{subfigure}
+    % \caption{Overall caption for both images}
+    \label{fig:full33stacked}
+\end{figure}
+
+\newpage
+
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}{\textwidth}
+        \centering
+        \includegraphics[width=0.9\textwidth]{src/AlexCNN_1ch_full_dataset_scale05.png}
+        % \caption{Caption for the first image}
+        \label{fig:full5sub1}
+    \end{subfigure}
+    
+    \vspace{1cm}
+    
+    \begin{subfigure}{\textwidth}
+        \centering
+        \includegraphics[width=0.9\textwidth]{src/AlexCNN_1ch_full_dataset_scale05loss.png}
+        % \caption{Caption for the second image}
+        \label{fig:full5sub2}
+    \end{subfigure}
+    \caption{Overall caption for both images}
+    \label{fig:full5stacked}
+\end{figure}
+
+\newpage
+
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}{\textwidth}
+        \centering
+        \includegraphics[width=0.9\textwidth]{src/AlexCNN_1ch_top50_dataset_scale033.png}
+        % \caption{Caption for the first image}
+        \label{fig:top5033sub1}
+    \end{subfigure}
+    
+    \vspace{1cm}
+    
+    \begin{subfigure}{\textwidth}
+        \centering
+        \includegraphics[width=0.9\textwidth]{src/AlexCNN_1ch_top50_dataset_scale033loss.png}
+        \caption{Caption for the second image}
+        \label{fig:top5033sub2}
+    \end{subfigure}
+    % \caption{Overall caption for both images}
+    \label{fig:top5033stacked}
+\end{figure}
+
+\newpage
+
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}{\textwidth}
+        \centering
+        \includegraphics[width=0.9\textwidth]{src/AlexCNN_1ch_top50_dataset_scale0.5.png}
+        % \caption{Caption for the first image}
+        \label{fig:top5005sub1}
+    \end{subfigure}
+    
+    \vspace{1cm}
+    
+    \begin{subfigure}{\textwidth}
+        \centering
+        \includegraphics[width=0.9\textwidth]{src/AlexCNN_1ch_top50_dataset_scale05losses.png}
+        \caption{Caption for the second image}
+        \label{fig:top5005sub2}
+    \end{subfigure}
+    % \caption{Overall caption for both images}
+    \label{fig:top5005stacked}
+\end{figure}
+
+
+\newpage
+
+The AlexCNN model, when trained on the full dataset with a $0.33$ probability threshold, achieved an accuracy of $0.7651$. The true positive rate was $0.625$, indicating that $62.5\%$ of CC positive instances were correctly identified, while the true negative rate stood at $0.881$. This configuration resulted in a precision of $0.8128$ and a recall of $0.6252$, yielding an F1-Score of $0.7068$. The model's discriminative ability was further evidenced by an ROC AUC of $0.8314$. The results for this training are presented on graph \ref{fig:full33stacked}.
+
+Increasing the probability threshold to $0.5$ on the full dataset, the AlexCNN model demonstrated an improved accuracy of $0.7866$. This adjustment led to a higher true positive rate of $0.697$ and a slightly decreased true negative rate of $0.860$. The precision was $0.8053$, with recall improving to $0.6974$. Consequently, the F1-Score rose to $0.7475$, and the ROC AUC value also increased to $0.8576$, suggesting enhanced overall performance. The results for this training are presented on graph \ref{fig:full5sub1}.
+
+Transitioning to the top50 dataset with a $0.33$ probability threshold, the AlexCNN model exhibited a notable increase in performance, achieving an accuracy of $0.8338$. The true positive rate significantly improved to $0.804$, and the true negative rate remained strong at $0.865$. This configuration yielded a precision of $0.8637$ and a recall of $0.8041$, resulting in a robust F1-Score of $0.8328$. The discriminative power of the model was further highlighted by an impressive ROC AUC of $0.9028$. The results for this training are presented on graph \ref{fig:top5033stacked}.
+
+Finally, with the AlexCNN model trained on the top50 dataset and a $0.5$ probability threshold, the highest performance among all configurations was observed, with an accuracy of $0.8597$. The true positive rate reached $0.839$, accompanied by a true negative rate of $0.882$. Precision was $0.8830$, and recall stood at $0.8386$, culminating in an F1-Score of $0.8602$. The ROC AUC for this configuration was $0.9221$, indicating superior classification capability. The results for this training are presented on graph \ref{fig:top5005stacked}.
+
+
+% % ================================
+
 
 \subsection{discussion}
 
 - LeNet did not train at all on either of the datasets- all events were classified as just one class
+- Achived performance metrics suggest that the network did not learn any meaningful features from the data.
+
+- LeNet did not train at all on either of the datasets- all events were classified as just one class
 - Alexnet perforemd significantly better, acheiving satisfactory results for both the full and the top50 datasets.
-- Sclale factor did influenece the performance (the larger the image the better), but not very significantly.
-- scale factor improved the networks ability to correctly classify events where no lepton shower was observerd.
-- the most significant difference in performace between top50 and full can be observed when it comes to proper classification of no lepton interaction events.
+- The erformance metrics achived for each training (LIST F1 socres here) suggest that some non-trivial base truth was found by the network.
+- Sclale factor did influenece the performance (the larger the image the better), but not very ssignificantly.
+
+- the most significant difference in performace between top50 and full can be observed when it comes to proper classification of electron neutrio interactions - decreased the amout of false negatives for this class.
 
 \section{Transformer}
 
@@ -846,7 +1048,6 @@ These weights are subsequently used to compute a weighted sum of the value vecto
 \end{figure}
 
 A visual overview of the multi-head attention mechanism is provided in Figure~\ref{fig:multiHeadAttention}.
-
 
 The multi-head attention mechanism extends the single-head idea by introducing multiple independent attention heads. Before attention is computed, the original input matrices \( Q \), \( K \), and \( V \) are each passed through separate trainable linear projections.
 
@@ -966,7 +1167,33 @@ The specific transforemer image transformer that ended up being used divided ima
 
 The transformer was trained for up to 10 epochs using a dataset split into training and validation batches. The validation set consisted of 1000 batches taken from the dataset, while the rest was used for training. An Adam optimizer with an exponentially decaying learning rate starting at 0.001 was used, with the learning rate decreasing by 5\% every 10 full passes through the training data. The model optimized a binary cross-entropy loss and tracked accuracy as a metric. Training incorporated early stopping, halting if the validation accuracy did not improve for 10 consecutive epochs.
 
-\section{Transformer theirraining and Evaluation Results}
+\section{Transformer training results and evaluation}
+
+\begin{figure}[H]
+    \centering
+    \begin{minipage}[t]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{src/}
+        \caption{Caption 1}
+        \label{fig:img1}
+    \end{minipage}
+    \hfill
+    \begin{minipage}[t]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{src/image2.png}
+        \caption{Caption 2}
+        \label{fig:img2}
+    \end{minipage}
+    
+    \vspace{1cm}
+    
+    \begin{minipage}[t]{0.6\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{src/image3.png}
+        \caption{Caption 3}
+        \label{fig:img3}
+    \end{minipage}
+\end{figure}
 
 
 \subsection{Training Summary}
