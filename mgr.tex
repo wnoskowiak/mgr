@@ -368,7 +368,7 @@ The final extracted dataset consisted of a CSV file containing the composite eve
 
 \subsection{Data extraction}
 
-Data from the \texttt{wire\_table}, \texttt{edep\_table}, and \texttt{lep\_table} were first matched with corresponding events in the \texttt{event\_table} (this was largely based on the code present in the Wireimage.ipynb notebook provided by the authors of the dataset). From each matched record, the lepton energy was extracted from the \texttt{lep\_table}, the neutrino energy from the \texttt{edep\_table}, and the \texttt{is\_cc} value from the \texttt{event\_table}. The \texttt{wire\_table} was used to obtain the wire signals for each event. It was subsequently processed into images, and linked to the corresponding event metadata for downstream analysis.
+Data from the \texttt{wire\_table}, \texttt{edep\_table}, and \texttt{lep\_table} was first matched with corresponding events in the \texttt{event\_table} (this was largely based on the code present in the Wireimage.ipynb notebook provided by the authors of the dataset). From each matched record, the lepton energy was extracted from the \texttt{lep\_table}, the neutrino energy from the \texttt{edep\_table}, and the \texttt{is\_cc} value from the \texttt{event\_table}. The \texttt{wire\_table} was used to obtain the wire signals for each event. It was subsequently processed into images, and linked to the corresponding event metadata for downstream analysis.
 
 \section{Image Rendering}
 
@@ -386,33 +386,65 @@ The final dataset consisted 132,816 PNG images, each representing a wire readout
 
 \section{Further Dataset Processing}
 
-Although the final image dataset occupied approximately 13~GB on disk, this was primarily due to the use of compressed image formats (specifically, PNG). When these images were loaded into memory as arrays of integers, their size increased dramatically—by more than a factor of 100 in some cases. It quickly became evident that the dataset was too large to be feasibly loaded into the system's RAM without causing memory fragmentation. However, loading each image individually into memory incurred significant computational overhead: each image had to be read from disk, memory had to be allocated, and the image had to be decompressed before being converted into an array. Since training a convolutional neural network (CNN) typically requires each image to be loaded multiple times, it was crucial to minimize the number of image loading operations.
+\subsection{Sparse array representation}
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.7\textwidth]{src/totalSparseDense.png}
     \caption{Comparison of total memory usage between dense and sparse array representations.}
+    \label{fig:memRedTot}
 \end{figure}
 
-During development, it was observed that the processed images contained mostly empty (zero-value) pixels. While tracks were present in all images, they typically occupied only a small portion of each image—approximately 5\% of the total pixels. (Note: Mention that the threshold used during the generation of wire images was sufficiently low to eliminate noise.) As a result, the decision was made to represent the images using sparse arrays (implemented with \texttt{torch.sparse}).... Unlike dense arrays, where each element is stored explicitly in memory, sparse arrays assume a default value for all positions and store only the non-zero values along with their coordinates. Although these sparse arrays still need to be converted to dense format before being passed to the CNN, this conversion is significantly less costly than loading and decompressing images from disk. This optimization led to a substantial reduction in memory usage—by up to a factor of 70—making it feasible to load the entire dataset into RAM.
+
+Although the final image dataset occupied approximately 13~GB on disk, this was primarily due to the use of compressed image formats (specifically, PNG). When these images were loaded into memory as arrays of integers, their size increased dramatically—by more than a factor of 100 in some cases. It quickly became evident that the dataset was too large to be feasibly loaded into the system's RAM without causing memory fragmentation. However, loading each image individually into memory incurred significant computational overhead: each image had to be read from disk, memory had to be allocated, and the image had to be decompressed before being converted into an array. Since training a convolutional neural network (CNN) typically requires each image to be loaded multiple times, it was crucial to minimize the number of image loading operations.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.7\textwidth]{src/sparseDenseComp.png}
     \caption{Comparison of average memory usage between dense and sparse array representations.}
+    \label{fig:memRedAvg}
 \end{figure}
 
-Another challenge arose from the number of individual files comprising the dataset. The final dataset contained approximately 120,000 image files. This created issues similar to those previously encountered when working with Miniconda—namely, the operaing system configurations used on ICM rysy and topola clusters used for CNN training imposed quotas on the number of files each user could allocate. Operating under an account close to that limit proved to be cumbersome. Notably, the total dataset size remained well below the storage quota in terms of bytes, indicating that reducing the number of files could resolve the problem without affecting overall storage usage.
+During development, it was observed that the processed images contained mostly empty (zero-value) pixels. While tracks were present in all images, they typically occupied only a small portion of each image—approximately 5\% of the total pixels. (Note: Mention that the threshold used during the generation of wire images was sufficiently low to eliminate noise.) As a result, the decision was made to represent the images using sparse arrays (implemented with \texttt{torch.sparse}) Unlike dense arrays, where each element is stored explicitly in memory, sparse arrays assume a default value for all positions and store only the non-zero values along with their coordinates. Although these sparse arrays still need to be converted to dense format before being passed to the CNN, this conversion is significantly less costly than loading and decompressing images from disk. This optimization led to a substantial reduction in memory usage—by up to a factor of 70—making it feasible to load the entire dataset into RAM. The magnitude of those size reductions are shown in Figures~\ref{fig:memRedTot} and~\ref{fig:memRedAvg}.
+\subsection{File count reduction}
 
-To address both issues, each CSV manifest file was loaded into a pandas DataFrame. Three additional columns were added to each record—one for each image associated with an event—and populated with the corresponding sparse arrays. Each resulting dataset was then saved as a single \texttt{.pkl} file, a format that preserves Python objects as they exist in memory. In total, 38 .pkl files were created, each corresponding to one original HDF5 file and containing all events and associated images from that file. The combined size of all \texttt{.pkl} files was approximately 32~GB, which corresponds closely to the amount of memory required to load them into RAM.
+The final dataset contained a significant amount of files - namely approximately 120,000 image files. This created issues similar to those previously encountered when working with Miniconda—namely, the operaing system configurations used on ICM rysy and topola clusters used for CNN training imposed quotas on the number of files each user could allocate. Operating under an account close to that limit proved to be cumbersome. Notably, the total dataset size remained well below the storage quota in terms of bytes, indicating that reducing the number of files could resolve the problem without affecting overall storage usage.
 
-\section{Classification Task and Data Selection}
+To address both issues, each CSV file was loaded into a pandas DataFrame. Three additional columns were added to each record—one for each image associated with an event—and populated with the corresponding sparse arrays. Each resulting dataset was then saved as a single \texttt{.pkl} file, a format that preserves Python objects as they exist in memory. In total, 38 .pkl files were created, each corresponding to one original HDF5 file and containing all events and associated images from that file. The combined size of all \texttt{.pkl} files was approximately 32~GB, which corresponds closely to the amount of memory required to load them into RAM.
 
-% HERE
-POPRAWIĆ
-The classification task is to distinguish electron neutrino charged current (CC) interactions from all other events based on the wire readout images.
+\chapter{Classification Task definition}
 
-To simplify the initial stages of analysis, the decision was made to focus on the most straightforward and visually distinct case: electron neutrino charged current (CC) interactions. These interactions produce energetic electrons that initiate electromagnetic showers, which leave highly visible and easily identifiable traces in the detector. Based on this, the dataset was divided into two classes—electron neutrino CC interactions and all other types of events. It was further hypothesized that higher-energy neutrinos are likely to produce more energetic electrons, which in turn generate more pronounced and spatially extended showers. Such events are presumed to be easier to detect and classify reliably. To leverage this property, the dataset was further narrowed down by selecting the top 50\% most energetic electron neutrino CC events, thereby prioritizing those cases with the clearest and most informative signatures.
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\textwidth]{src/electronShower.pdf}
+\caption{Example of an electromagnetic shower produced by an electron neutrino interaction in a LArTPC detector (marked in red).}
+\label{fig:electron_shower}
+\end{figure}
+
+A general heuristic can be assumed: the more significant the visual difference between two classes in a classification problem, the better an image classification algorithm will perform. However, the problem should remain non-trivial and possess potential scientific utility.
+
+As mentioned before, charged current neutrino interactions produce leptons. The different types of leptons resulting from these interactions can be distinguished. When passing through a LArTPC chamber, electrons—produced in electron neutrino interactions—generate electromagnetic showers. These showers are highly visible and have a very distinguishable shape (they appear as 'showers', not tracks), making them easily identifiable \ref{fig:electron_shower}.
+
+For these reasons, after some deliberation, a decision was made to divide the dataset based on whether or not a charged current electron neutrino interaction occurred in a given sample.
+
+To simplify the problem further (by narrowing the data down to interactions with the most pronounced electron showers), an additional dataset was created. This subset contains only the 50\% most energetic electron neutrino charged current interactions. The size of the other class was also reduced arbitrarily to avoid class imbalance. This dataset is further referred to in the work as \texttt{top50}.
+
+All the machine learning models discussed further in this work were trained on these aforementioned classification tasks. A summary of the number of members of each class for each dataset can be found in Table \ref{tab:dataset_stats}.
+
+
+\begin{table}[h]
+    \centering
+    \caption{Summary statistics of the full and \texttt{top50} datasets used for classification.}
+    \label{tab:dataset_stats}
+    \begin{tabular}{lccc}
+        \toprule
+        \textbf{Dataset} & \textbf{Total Samples} & \textbf{Other} & \textbf{CC $\mu_e$ } \\
+        \midrule
+        Full Dataset     & 44,272                 & 24,225 & 20,047 \\
+        \texttt{top50} Dataset & 22,136                 & 10,739 & 11,397 \\
+        \bottomrule
+    \end{tabular}
+\end{table}
 
 \chapter{Machine learning basics}
 
@@ -430,7 +462,7 @@ f(\mathbf{x}_i) \approx y_i \quad \forall i \in \{1, \dots, N\}
 
 \subsection{Machine learning model and learnable Parameters}
 
-The term machine learning model mentioned futrher in the work will refer to a pairing of a set of learnable parameters \( \boldsymbol{\theta} \in \mathbb{R}^p \), where \( p \) is the total number of parameters, and a model function \( f(\mathbf{x}; \boldsymbol{\theta}) \) which maps the input space to the output space. The learnable parameters \( \boldsymbol{\theta} \) are variables within the model that can be adjusted during the training process to minimize the difference between the model's predictions and the actual target values. They have a direct influence on the model's output.
+The term machine learning model mentioned further in the work will refer to a pairing of a set of learnable parameters \( \boldsymbol{\theta} \in \mathbb{R}^p \), where \( p \) is the total number of parameters, and a model function \( f(\mathbf{x}; \boldsymbol{\theta}) \) which maps the input space to the output space. The learnable parameters \( \boldsymbol{\theta} \) are variables within the model that can be adjusted during the training process to minimize the difference between the model's predictions and the actual target values. They have a direct influence on the model's output.
 
 
 The training process begins by setting all elements of \( \boldsymbol{\theta} \) with some initial values. For each training iteration, a batch of input data \( \mathbf{X} \in \mathbb{R}^{b \times d} \) is passed through the model, and the corresponding predictions \( \hat{\mathbf{y}} \in \mathbb{R}^b \) are obtained:
