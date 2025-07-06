@@ -788,7 +788,6 @@ The first layers of the neural network consist of a hierarchy of convolution and
 
 During training, the network first attempts to classify a batch of input elements. The predicted output is then compared to the true class labels, and a loss value is computed. This loss is subsequently backpropagated through the network, and the gradients for all learnable parameters are calculated. Finally, a step of gradient descent is performed, and the learnable parameters are updated accordingly.
 
-
 \section{Networks used}
 
 Two different architectures were used to classify the images, specifics of which are described below. Both networks were trained on the same dataset, with the same hyperparameters, to ensure a fair comparison of their respective performance.
@@ -964,6 +963,10 @@ Training results for the LeNet-like network are presented in Figures~\ref{fig:Le
 
 \subsection{AlexNet}
 
+Training results for the AlexNet-like network are presented in Figures~\ref{fig:full33stacked}, \ref{fig:full5sub1}, \ref{fig:top5033stacked}, and \ref{fig:top5005stacked}. Overall, the network was able to achieve satisfactory results for all datasets and scaling factors. The performance metrics achieved for each training suggest that some non-trivial underlying patterns were learned by the network. Training loss behaved as expected—decreasing steadily, with the rate of change becoming smaller with each epoch. Classification accuracy increased over the course of training.
+
+In all cases, AlexNet-based networks performed better at classifying non-CC events than CC events (the number of false positives in the latter case was greater in every training). Increasing the scale factor of the input image did increase the network's performance, but not in a very significant way. Most of the improvement came from reducing the number of false negatives for electron neutrino interactions.
+
 \begin{figure}[H]
     \centering
     \begin{subfigure}{\textwidth}
@@ -1056,16 +1059,18 @@ Training results for the LeNet-like network are presented in Figures~\ref{fig:Le
 
 \newpage
 
-Training results for the AlexNet-like network are presented in Figures~\ref{fig:full33stacked}, \ref{fig:full5sub1}, \ref{fig:top5033stacked}, and \ref{fig:top5005stacked}. Overall, the network was able to achieve satisfactory results for all datasets and scaling factors. The performance metrics achieved for each training suggest that some non-trivial underlying patterns were learned by the network. Training loss behaved as expected—decreasing steadily, with the rate of change becoming smaller with each epoch. Classification accuracy increased over the course of training.
-
-In all cases, AlexNet-based networks performed better at classifying non-CC events than CC events (the number of false positives in the latter case was greater in every training). Increasing the scale factor of the input image did increase the network's performance, but not in a very significant way. Most of the improvement came from reducing the number of false negatives for electron neutrino interactions.
-
-
 \subsection{discussion}
 
 As noted before, the LeNet-like network was unable to learn any meaningful features from the data, while the AlexNet-like network performed relatively well on all datasets. This outcome could have been somewhat expected, as LeNet is significantly less complex and shallower than AlexNet, which limits its ability to learn complex features from the data. It may be possible that the learning results could be improved by adjusting the training parameters, but the complete lack of performance suggests that it is not well-suited for the classification task at hand.
 
-The strong performance of the AlexNet-like network suggests that it was able to learn some non-trivial features from the data.  The fact that the network ended up being slightly better at classifying non-CC events than CC events can also be considered expected behavior—certain noise patterns (such as the presence of tracks from other leptons or overlapping noise tracks) may be misinterpreted as electron showers. The performance of the network could still be improved by refining the training parameters, but the observed rise in validation loss during later training epochs suggests that the network may have started to overfit the training data. Training on a larger dataset could potentially bring a meaningful performance increase.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{src/without_flag_20.png}
+    \caption{Example of a wire readout image where no neutrino interaction is present, yet AlexNet-Like network classified it as a charged-current (CC) event.}
+    \label{fig:without_flag}
+\end{figure}
+
+The strong performance of the AlexNet-like network suggests that it was able to learn some non-trivial features from the data.  The fact that the network ended up being slightly better at classifying non-CC events than CC events can also be considered expected behavior—certain noise patterns (such as the presence of tracks from other leptons or overlapping noise tracks) may be misinterpreted as electron showers\ref{fig:without_flag}. The performance of the network could still be improved by refining the training parameters, but the observed rise in validation loss during later training epochs suggests that the network may have started to overfit the training data. Training on a larger dataset could potentially bring a meaningful performance increase.
 
 Taking into account the high accuracy of the AlexNet-like network, it can be reasonably assumed that the classification problems, as previously stated, are solvable using deep learning techniques. To extend the discussion, another approach to image classification was attempted—namely, one involving an image transformer architecture. The details of this approach are described in the next chapter.
 
@@ -1077,6 +1082,8 @@ The transformer is a deep learning architecture introduced for processing sequen
 The core components of the transformer include multi-head self-attention layer and residual connections with layer normalization. The model is organized into repeated layers or blocks, each consisting of an attention sublayer (see Figure~\ref{fig:transformerEncoder}).
 
 Inputs to the transformer are first passed through an embedding layer, and positional encodings are added to the embeddings to retain information about the order of tokens in the sequence. These embeddings are then passed through a number of encoder blocks, each consisting of multi-head self-attention and linear layers, with the output of one block serving as the input to the next. The final output is a sequence of continuous vectors, which can then be processed by a decoder or used directly for tasks such as classification or regression.
+
+\section{Elements of the Transformer Architecture}
 
 \subsection{Embeddings}
 
@@ -1097,6 +1104,7 @@ Given a sequence of input tokens \( \{t_1, t_2, \ldots, t_n\} \), the correspond
 \]
 
 The embedding matrix consists of trainable parameters and is optimized jointly with the rest of the model. The goal of this mapping is to project discrete inputs into a continuous space where meaningful relationships can be learned during training.
+
 \subsection{Transformer Encoder}
 
 \begin{figure}[h]
@@ -1185,27 +1193,27 @@ Given an input \( \mathbf{x} \) and a sublayer function \( \text{Sublayer}(\cdot
 
 The residual connection adds the input of the sublayer to its output, and layer normalization standardizes the summed output across the feature dimension. This structure helps preserve information and stabilizes the optimization process.
 
-
 \subsection{Positional encoding}
 
 \begin{figure}[H]
     \centering
-    \begin{minipage}{0.49\textwidth}
+    \begin{minipage}{\textwidth}
+        \centering
+        \includegraphics[width=0.9\textwidth]{src/embedings.png}
+    \end{minipage}
+    \vspace{0.2cm}
+    \begin{minipage}{\textwidth}
         \centering
         \begin{align*}
         PE(pos, 2i) &= \sin\left(\frac{pos}{10000^{\frac{2i}{d_{\text{model}}}}}\right) \\
         PE(pos, 2i + 1) &= \cos\left(\frac{pos}{10000^{\frac{2i}{d_{\text{model}}}}}\right)
         \end{align*}
     \end{minipage}
-    \begin{minipage}{0.49\textwidth}
-        \centering
-        \includegraphics[width=0.9\textwidth]{src/embedings.png}
-    \end{minipage}
-    \caption{Example of how positional encoding can be handled. The heatmap on the right visually represents a positional encoding for 128-dimensional vectors. Each row corresponds to a position in the input sequence, and each column represents a dimension within the embedding vector. The color gradient signifies the value of the positional encoding at that specific position and dimension. The equations on the left define the sinusoidal functions used to compute the positional encoding for each position \( pos \) and dimension \( i \) in the embedding vector.}
+    \label{fig:positionalEncoding}
+    \caption{Example of how positional encoding can be handled. The heatmap at the top visually represents a positional encoding for 128-dimensional vectors. Each row corresponds to a position in the input sequence, and each column represents a dimension within the embedding vector. The color gradient signifies the value of the positional encoding at that specific position and dimension. The equations at the bottom define the sinusoidal functions used to compute the positional encoding for each position \( pos \) and dimension \( i \) in the embedding vector.}
 \end{figure}
 
 The sinusoidal positional encoding and its heatmap representation are shown in the diagram in Figure~\ref{fig:positionalEncoding}.
-
 
 Importantly, the architecture described above does not inherently retain positional information of the input sequence. To address this, the transformer architecture incorporates \textit{positional encoding}, which injects information about the position of each token in the sequence into the input embeddings. The encoded position of each token is added to its corresponding embedding before being passed through the transformer layers:
 \[
@@ -1219,13 +1227,12 @@ where \( \mathbf{x} \) denotes the input embedding and \( \mathbf{P} \) is the p
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.55\textwidth]{src/visNet.pdf}
+    \includegraphics[width=0.8\textwidth]{src/visNet.pdf}
     \caption{Visual transformer architecture visualized}
     \label{fig:visNetArch}
 \end{figure}
 
 The transformer architecture adapted for images is illustrated in Figure~\ref{fig:visNetArch}.
-
 
 The image transformer extends the standard transformer architecture to process visual inputs. Rather than operating on word tokens, the input image is divided into a sequence of fixed-size non-overlapping patches. A typical configuration involves splitting the image into 16 patches of \(16 \times 16\) pixels each. These patches are then flattened into vectors and linearly projected to a fixed embedding dimension, producing a sequence of patch embeddings.
 
@@ -1237,11 +1244,11 @@ To enable image-level classification, a special token known as the classificatio
 
 After processing through all transformer layers, the final output corresponding to the [CLS] token serves as a global representation of the image. This output is passed to a multi-layer perceptron (MLP) head to produce class logits. The [CLS] token is trained jointly with the model to optimize performance on the target classification task.
 
-\subsection{Positional Encoding for Image Fragments}
+\subsection{Positional Encoding for image patches}
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.45\textwidth]{src/imNetEncodings.pdf}
+    \includegraphics[width=0.7\textwidth]{src/imNetEncodings.pdf}
     \caption{Cosine similarity of positional encoding for image patches from the original Vision Transformer paper. Embeddings for patches close to each other are similar.}
     \label{fig:imNetEncodings}
 \end{figure}
@@ -1251,12 +1258,12 @@ Figure~\ref{fig:imNetEncodings} shows how positional encodings correlate spatial
 
 To retain spatial context after converting image patches into a sequence, positional embeddings are added to each patch embedding. These embeddings are learnable parameters and are optimized during training alongside the rest of the model. Their purpose is to encode the location of each patch within the original image, enabling the model to distinguish between otherwise identical patches in different positions.
 
-Empirical analysis has shown that these embeddings evolve such that neighboring patches in the image space tend to receive similar positional encodings. This spatial correlation helps the transformer capture local structure while also enabling long-range dependencies to be modeled across distant regions of the image.
+These embedding can either learned during training or be computed outright. Empirical analysis has shown that when parameters of the embedding is allowed to train with the network they evolve such that neighboring patches in the image space tend to receive similar positional encodings. This spatial correlation helps the transformer capture local structure while also enabling long-range dependencies to be modeled across distant regions of the image.
 
 
 \section{Transformer architecture used}
 
-The specific transforemer image transformer that ended up being used divided images into patches of 16x16 pixels each. Each patch is mapped to a 32-dimensional embedding vector. Positional encoding is applied using sine and cosine functions across the embedding dimensions. The model includes a single multi-head self-attention layer with two heads to capture relationships between patches. A final three-layer multilayer perceptron consisted of layer sizes of 32, 16, and 2 neurons respectively.
+The specific transformer image transformer that ended up being used was largely based on the implementation kindly provided by professor Artur Kalinowski. Just like the one originally proposed in \cite{ViT} it divided images into patches of 16x16 pixels each. Each patch is mapped to a 32-dimensional embedding vector. Positional encoding is applied using sine and cosine functions across the embedding dimensions. The model includes a single multi-head self-attention layer with two heads to capture relationships between patches. A final three-layer multilayer perceptron consisted of layer sizes of 32, 16, and 2 neurons respectively.
 
 \subsection{Training procedure}
 
@@ -1266,75 +1273,69 @@ The transformer was trained for up to 10 epochs using a dataset split into train
 
 \begin{figure}[H]
     \centering
+
+    \begin{minipage}[t]{0.8\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{src/tranformerMatrixFinal.png}
+        
+        % \caption{Caption 3}
+    \end{minipage}
+
+    \vspace{1cm}
+
     \begin{minipage}[t]{0.48\textwidth}
         \centering
-        \includegraphics[width=\textwidth]{src/}
-        \caption{Caption 1}
-        \label{fig:img1}
+        \includegraphics[width=\textwidth]{src/transformerLoss.png}
+        % \caption{Caption 1}
     \end{minipage}
     \hfill
     \begin{minipage}[t]{0.48\textwidth}
         \centering
-        \includegraphics[width=\textwidth]{src/image2.png}
-        \caption{Caption 2}
-        \label{fig:img2}
+        \includegraphics[width=\textwidth]{src/transformerROCurve.png}
+        % \caption{Caption 2}
     \end{minipage}
-    
-    \vspace{1cm}
-    
-    \begin{minipage}[t]{0.6\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{src/image3.png}
-        \caption{Caption 3}
-        \label{fig:img3}
-    \end{minipage}
+    \caption{Transformer training results. The left image shows the normalized confusion matrix, the middle image shows the ROC curve, and the right image shows the training loss over epochs.}
+    \label{fig:tranformerResults}
 \end{figure}
 
 
 \subsection{Training Summary}
 
-The neural network was trained for 10 epochs using an exponentially decaying learning rate schedule. The final training loss reached \textbf{0.5839}, with a training accuracy of \textbf{69.04\%}. Validation performance at the end of training showed a loss of \textbf{0.6139} and an accuracy of \textbf{66.00\%}, which was also the best recorded validation accuracy.
+Details of the training process are summarized in Figure~\ref{fig:tranformerResults}. The neural network was trained for 10 epochs using an exponentially decaying learning rate schedule. The final training loss reached 0.5839, with a training accuracy of 69.04\%. Validation performance at the end of training showed a loss of 0.6139 and an accuracy of 66.00\%, which was also the best recorded validation accuracy.
 
-Testing on the held-out dataset yielded a final loss of \textbf{0.6218} and an accuracy of \textbf{66.03\%}, indicating consistent generalization performance.
+Testing on the held-out dataset yielded a final loss of 0.6218 and an accuracy of 66.03\%, indicating consistent generalization performance.
 
 \subsection{Learning Dynamics}
 
-During training, the loss decreased by \textbf{12.0\%}, and accuracy improved by \textbf{9.75 percentage points}. The training-validation accuracy gap was \textbf{3.04 percentage points}, suggesting low overfitting. Loss fluctuations over the final five epochs were minimal (standard deviation: \textbf{0.0039}), indicating moderate convergence.
+During training, the loss decreased by 12.0\%, and accuracy improved by 9.75 percentage points. The training-validation accuracy gap was 3.04 percentage points, suggesting low overfitting. Loss fluctuations over the final five epochs were minimal (standard deviation: 0.0039), indicating moderate convergence.
 
 \subsection{Classification Metrics}
 
-Evaluation of class-wise performance yielded the following:
-
-\begin{itemize}
-    \item \textbf{Class "CC e"}
-    \begin{itemize}
-        \item Precision: 0.6773
-        \item Recall: 0.6442
-        \item F1-Score: 0.6603
-    \end{itemize}
-    \item \textbf{Class "other"}
-    \begin{itemize}
-        \item Precision: 0.6441
-        \item Recall: 0.6773
-        \item F1-Score: 0.6603
-    \end{itemize}
-\end{itemize}
-
-The overall model achieved an \textbf{AUC-ROC score of 0.7207}, confirming its capacity to discriminate between the two classes effectively.
-
-\subsection{Confusion Matrix}
-
-Figure~\ref{fig:conf_matrix} presents the normalized confusion matrix for the test set. The model correctly classified \textbf{64\%} of "CC e" instances and \textbf{68\%} of "other" instances. Misclassification rates were relatively balanced between the two classes.
-
-\begin{figure}[H]
+\begin{table}[H]
     \centering
-    \includegraphics[width=0.45\textwidth]{src/tranformerMatrixFinal.png}
-    \caption{Normalized confusion matrix showing prediction distribution across classes.}
-    \label{fig:conf_matrix}
-\end{figure}
+    \begin{tabular}{lc}
+        \toprule
+        \textbf{Metric} & \textbf{Value} \\
+        \midrule
+        Precision (CC e) & 0.6773 \\
+        Recall (CC e)    & 0.6442 \\
+        F1 Score (overall) & 0.6603 \\
+        AUC-ROC Score (overall) & 0.7207 \\
+        \bottomrule
+    \end{tabular}
+    \caption{Performance metrics for the transformer.}
+    \label{tab:cc_metrics}
+\end{table}
 
+The classification metrics for the transformer are summarized in Table~\ref{tab:cc_metrics}.
 
-\section{Conclusion}
+\subsection{Discussion}
+
+The transformer-based model demonstrated reasonable performance on the classification task, achieving an accuracy of 66.03\% on the test set. Although it performed worse than the AlexNet-like CNN, the performance metrics suggest that it did manage to extract some ground truth from the training data.
+
+The transformer's poorer performance is somewhat expected. The training set was relatively small, and as mentioned in \cite{ViT}, the advantages of transformer architectures over CNNs typically emerge only when trained on sufficiently large datasets. The specific transformer architecture used was also relatively simple, which may have limited its ability to extract higher-level features from the data. A more complex architecture, however, could not have been efficiently trained on the available amount of data. It can be reasonably assumed that the performance of the transformer could be improved by training on a larger dataset, as well as by employing a more complex architecture.
+
+\chapter{Conclusion}
 
 \newpage
 
