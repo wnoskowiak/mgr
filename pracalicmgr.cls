@@ -14,7 +14,7 @@
 
 
 \def\@baseclass{report}
-\def\@rodzajpracy{Bachelor’s}
+\def\@rodzajpracy{Master's}
 \DeclareOption{magisterska}{\def\@rodzajpracy{magisterska}}
 \DeclareOption*{\PassOptionsToClass{\CurrentOption}{\@baseclass}}
 \PassOptionsToClass{a4paper,twoside,openright,11pt}{\@baseclass}

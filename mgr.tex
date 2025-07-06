@@ -21,6 +21,27 @@
 \usepackage{amssymb}
 \usepackage{graphicx}
 \usepackage{fancyhdr}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{titlesec}
+\usepackage[T1]{fontenc}
+\usepackage{float}
+\usepackage[english]{babel}
+\usepackage{gensymb}
+\usepackage{enumitem}
+\usepackage{chngcntr}
+\usepackage{epstopdf}
+\usepackage{color}
+\usepackage{indentfirst}
+\usepackage{mathtools}
+\usepackage{lmodern}
+\usepackage{amsfonts}
+\usepackage{hyperref}
+\usepackage{xurl}
+\usepackage{braket}
+\usepackage{amsmath}
+\usepackage{longtable}
 \pagestyle{fancy}
 \fancyhf{} % Clear all headers and footers
 \fancyfoot[R]{\thepage} % Put page number on the right in footer
@@ -61,123 +82,94 @@
 \maketitle
 \let\cleardoublepage\clearpage
 
-% --- Thesis Title Page ---
-\newgeometry{left=2.5cm,right=2.5cm, top=3cm, bottom=4cm}
-\begin{titlepage}
-    \centering
-    {\Large University of Warsaw \par}
-    {\large Faculty of physics \par}
-    \vspace{2cm}
-    {\large Wojciech Noskowiak \par}
-    {\large Record book number: 417909 \par}
-    \vspace{2cm}
-    {\Huge \textbf{<Title of the diploma thesis>} \par}
-    \vspace{2cm}
-    {\medium Master's thesis \par}
-    {\medium in the field of physics \par}
-    \vspace{2cm}
-    \begin{flushright} % Shift this block to the right
-        {\medium The thesis was written under the supervision of \par}
-        {\medium <title/degree, first name and surname> \par}
-        {\medium <name of the unit employing the thesis supervisor> \par}
-    \end{flushright}
-    \vfill
-    {\large Warsaw, July 2025 \par}
-\end{titlepage}
-\restoregeometry
+\begin{abstract}
+    An efficient approach to high-precision calculations of expectation values of electronic operators in two-electron diatomic molecules is outlined and explored. A detailed description of the method and its usefulness is provided and illustrated with numerical calculations of the permanent dipole moment and energy of the HeH\textsuperscript{+} molecule in its ground state. A comparison of obtained results against values present in the literature is provided and discussed.
+\end{abstract}
 
-\newpage
+\tableofcontents
 
-% --- Summary Section ---
-\section*{Summary}
-<Short (maximum 3,000 characters including spaces, but no less than 1,000 characters including spaces) summary of the thesis>
+% \newpage
 
-% --- Keywords Section ---
-\section*{Keywords}
-<List of maximum 10 freely selected words>
+\chapter*{Introduction}
 
-% --- Polish Title Section ---
-\section*{Title of the thesis in Polish language}
-<Title of the thesis translated into Polish language>
-
-\newpage
-
-
-% \onehalfspacing
-% \maketitle
-\tableofcontents % Add table of contents
-\newpage % Start content on a new page
-
-\section{Introduction}
-
-Neutrino oscillations were first observed in solar and atmospheric neutrinos in the late 1960s and have since been the subject of extensive experimental and theoretical investigation. The mechanism by which neutrinos acquire mass remains insufficiently explained, and the exact values of their masses are still unknown.
+Neutrinos are fundamental particles that come in three known types (also referred to as flavors). They interact only via the weak nuclear force, making them difficult to detect. In the late 1960s, experiments observed a deficit in the number of solar neutrinos, which was later explained by the phenomenon of neutrino oscillations, which have since been the subject of extensive experimental and theoretical investigation. The mechanism by which neutrinos acquire mass remains unknown, since their masses have not yet been measured.
 
 In addition, several experimental anomalies have been reported that deviate from the predictions of the three-flavor neutrino oscillation model. These include results from the LSND and MiniBooNE experiments, as well as the reactor neutrino anomaly. In all cases, the observed number of neutrinos does not align with the expectations derived from standard oscillation models.
 
 One possible explanation for these discrepancies involves extending the current model by introducing additional neutrino flavors. In particular, the hypothesis of sterile neutrinos—neutrinos that do not interact via the weak nuclear force—has been proposed. If such a hypothesis would be confirmed it would require an extension of the Standard Model of particle physics. These potential non-interactive neutrinos have even been considered as potential candidates for dark matter.
 
-These anomalies have driven the development of new neutrino detectors designed to probe oscillation phenomena with greater precision. Among them are the MicroBooNE and DUNE experiments.
+Neutrino oscillations—both standard and non-standard—have so far been studied primarily using water or ice based Cherenkov detectors and scintillation detectors. More recently, liquid argon detectors have started being more commonly deployed.
 
-Efficient analysis and interpretation of data produced by the aforementioned detectors is still an open problem.
+These detectors offer superior spatial resolution to their predecessors,and efficient analysis and interpretation of data produced by the aforementioned detectors is still an open problem.
 
 This work explores the application of machine learning methods to this problem. Specifically, it investigates and implements selected approaches and evaluates their performance using the publicly available MicroBooNE OpenSamples dataset.
 
-\section{Neutrinos}
+\chapter{Neutrinos}
+
+\section{Iterations}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.7\textwidth]{src/xfig1_3nu.pdf}
+    \caption{Feynman diagram illustrating neutrino interactions.}
+    \label{fig:Feynman_diagram_neutrino}
+\end{figure}
 
 Neutrinos are electrically neutral, spin-$\frac{1}{2}$ elementary particles that belong to the lepton family within the Standard Model of particle physics. They exist in three distinct flavors, corresponding to the three charged leptons: the electron neutrino ($\nu_e$), the muon neutrino ($\nu_\mu$), and the tau neutrino ($\nu_\tau$).
 
-These flavor classifications arise from the weak decay processes mediated by the $W$ boson, in which a charged lepton is produced alongside a corresponding neutrino. For instance, in a $W^-$ decay producing an electron, an electron neutrino is emitted; similarly, decays yielding a muon or tau lepton produce a muon or tau neutrino, respectively.
+These flavor classifications arise from the weak decay processes mediated by the $W$ boson, in which a charged lepton is produced alongside a corresponding neutrino. For instance, in a $W^-$ decay producing an electron, an electron neutrino is emitted; similarly, decays yielding a muon or tau lepton produce a muon or tau neutrino, respectively. Feynman diagrams of these interactions are shown in figure~\ref{fig:Feynman_diagram_neutrino}.
 
 Due to their lack of electric charge, negligible mass, and absence of color charge, neutrinos interact with matter only via the weak nuclear force. This interaction occurs through two fundamental mechanisms: neutral current interactions, mediated by the electrically neutral $Z^0$ boson, and charged current interactions, mediated by the charged $W^+$ or $W^-$ bosons.
 
-In charged current interactions, the neutrino exchanges a $W$ boson with a target particle, resulting in the production of a charged lepton of the same flavor. In contrast, neutral current interactions involve the exchange of a $Z^0$ boson and do not alter the identity of the interacting neutrino.
+In charged current interactions, the neutrino exchanges a $W$ boson with a target particle, resulting in the production of a charged lepton of the same flavor, which enables neutrino flavor identification. In contrast, neutral current interactions involve the exchange of a $Z^0$ boson and leave the neutrino unchanged, making the final state flavor-indistinguishable.
 
 The weak interaction is characterized by a very short range, typically on the order of $10^{-17}$ to $10^{-18}$ meters, which makes neutrino interactions with matter extremely rare. As a result, detecting neutrinos requires either very intense neutrino beams and/or very large detectors to observe a statistically significant number of interactions.
 
+\section{Liquid Argon Detectors}
 
-\section{Neutrino Detectors}
-
-\subsection{Liquid Argon Detectors}
+\subsection{Operating principle}
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.7\textwidth]{src/LAr_diagram_DUNE.png}
+    \includegraphics[width=0.85\textwidth]{src/LAr_diagram_DUNE.png}
     \caption{General mechanism of a liquid argon detector (LArTPC).}
+    \label{fig:lartcp}
 \end{figure}
 
-Argon is chosen as the detection medium because it is a noble gas, which is chemically inert and allows for efficient ionization and scintillation. Using argon in a liquid state increases its density, thereby enhancing the probability of neutrino interactions.
+LArTPC detectors consist of a large chamber filled with liquid argon. Charged particles traversing the chamber leave trails of ionized electrons. An applied electric field causes these electrons to drift toward the anode, where they are detected. Simultaneously, vacuum ultraviolet (VUV) scintillation photons are emitted and collected by photodetectors. The general mechanism of a liquid argon detector is shown in Figure~\ref{fig:lartcp}.
 
-LArTPC detectors consist of a large chamber filled with liquid argon. Charged particles traversing the chamber leave trails of ionized electrons. An applied electric field causes these electrons to drift toward the anode, where they are detected. Simultaneously, vacuum ultraviolet (VUV) scintillation photons are emitted and collected by photodetectors.
+Argon is chosen as the detection medium because it is a noble gas, which is chemically inert and allows for efficient ionization and scintillation. In its liquid state, argon has a high density, enhancing the probability of neutrino interactions. Importantly, argon does not capture ionization electrons, allowing them to drift over long distances without recombination—provided the medium is pure.
 
 When a neutrino interacts with an argon nucleus, it produces charged particles that traverse the medium, leaving behind trails of ionized electrons. The detector volume is subjected to a uniform electric field, which causes these free electrons to drift toward a set of anode planes, where their arrival is recorded. At the same time, the interaction generates VUV scintillation photons, which are detected by an array of photodetectors placed around the chamber. The information from the ionization charge provides two spatial coordinates, while the timing information from the scintillation light gives the third coordinate, enabling full three-dimensional reconstruction of particle trajectories and interaction vertices within the detector volume.
 
 \subsection{Noise}
 
-Neutrino interactions are not the only source of signals in the detector. Cosmic rays—high-energy particles from beyond the solar system—can also ionize the detector medium, producing characteristic noise patterns. These patterns are typically distinct and easily distinguishable from genuine neutrino events. They often take the form of long, low-intensity tracks oriented in a single direction. To minimize the occurrence of such noise, LArTPC detectors are usually placed underground. However, complete elimination of these events is not possible.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{src/wireimageIM.png}
+    \caption{Example of noise patterns in lartcp detectors, taken from microBooNe}
+    \label{fig:noise}
+\end{figure}
 
+Neutrino interactions are not the only source of signals in the detector. Cosmic muons produced by secondary cosmic rays in the atmosphere can also ionize the detector medium, producing characteristic noise patterns. These patterns are typically distinct and easily distinguishable from genuine neutrino events. They often take the form of long, low-intensity tracks oriented in a single direction \ref{fig:noise}. The rate of such background events strongly depends on how deep the detector's been placed underground. For this reason, LArTPC detectors are usually placed at significant depths. However, complete elimination of these events is not possible. Therefore such events need to be accounted for and filtered out during data processing.
 
-\section{MicroBooNE Detector}
+\chapter{MicroBooNE Experiment}
 
+\section{Detector}
 
 \begin{figure}[H]
     \centering
-    \begin{minipage}[t]{0.48\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{src/microbooneBirdseyes.pdf}
-        \caption{Aerial diagram showing location of MicroBooNE.}
-        \label{fig:microboone_birdseye}
-    \end{minipage}
-    \hfill
-    \begin{minipage}[t]{0.48\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{src/microBooNe_Layout.pdf}
-        \caption{Schematic diagram of the MicroBooNE LArTPC inside the cryostat.}
-        \label{fig:microboone_layout}
-    \end{minipage}
+    \includegraphics[width=0.80\textwidth]{src/microbooneBirdseyes.pdf}
+    \caption{Aerial diagram showing location of MicroBooNE.}
+    \label{fig:microboone_birdseye}
 \end{figure}
 
+The MicroBooNE experiment began operation at Fermilab in 2015 and currently functions as the near detector in the Short-Baseline Neutrino (SBN) program. It's primary scientific goal  is to investigate the source of the excess of electron neutrino-like events observed in the predominantly muon neutrino beam by the MiniBooNE experiment. It's exact placement in the BNB (Booster Neutrino Beam) is shown in Figure~\ref{fig:microboone_birdseye}.
 
-The MicroBooNE experiment operated at Fermilab from 2015 to 2021 and served as the first detector in the Short-Baseline Neutrino (SBN) program. 
+MicroBooNE is based on a 170-ton liquid-argon TPC, enclosed in a cryostat and depicted in Figure~\ref{fig:microboone_layout}. It's general operating principal is strictly analogous to the one described by \ref{fig:lartcp} The detector is located on the Fermilab site, as shown in Figure~\ref{fig:microboone_birdseye}. Key design parameters are summarized in Table~\ref{tab:microboone_specs}.
+
+In addition to its primary scientific goals, it contributed essential input toward the development of kiloton-scale liquid-argon time projection chambers (LArTPCs) for the upcoming Deep Underground Neutrino Experiment (DUNE).
+
 
 \begin{table}[H]
 \centering
@@ -203,51 +195,54 @@ Total liquid argon mass & 170 tonnes \\
 \hline
 Operating temperature & 87 K \\
 \hline
+Depth & 1.5 m \\
+\hline
 \end{tabular}
 \label{tab:microboone_specs}
 \end{table}
 
-MicroBooNE is based on a 170-ton liquid-argon TPC, enclosed in a cryostat and depicted in Figure~\ref{fig:microboone_layout}. The detector is located on the Fermilab site, as shown in Figure~\ref{fig:microboone_birdseye}. Key design parameters are summarized in Table~\ref{fig:microboone_layout}.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.65\textwidth]{src/microBooNe_Layout.pdf}
+    \caption{Schematic diagram of the MicroBooNE LArTPC inside the cryostat.}
+    \label{fig:microboone_layout}
+\end{figure}
 
-The LArTPC itself contains 90 tonnes of liquid argon. Ionization electrons produced by charged particles traveling through the detector volume are drifted under a uniform electric field of 500~V/cm towards a wire plane assembly. The readout system comprises 8256 wires.
+\subsection{Publicly available datasets}
 
-The TPC volume has dimensions of 2.325~m vertically, 2.560~m horizontally, and 10.368~m longitudinally. For light collection, the system includes 32 photomultiplier tubes (PMTs) of 200~mm (8~inch) diameter and 4 lightguide paddles. The detector operates at a cryogenic temperature of 87~K.
+Two MicroBooNE datasets are opened to the public. They contain simulated neutrino interactions overlaid on top of cosmic ray data. These datasets were provided to support the development of new computational techniques for neutrino event reconstruction and analysis, primarily with DUNE in mind. They will be discussed in greater detail in the next chapter.
 
-In addition to its primary scientific goals, it contributed essential input toward the development of kiloton-scale liquid-argon time projection chambers (LArTPCs) for the upcoming Deep Underground Neutrino Experiment (DUNE).
+\chapter{MicroBooNE Public Datasets}
 
-% 1. Rozdział 3: Change title and add intro about datasets used
-\section{MicroBooNE Public Datasets}
-At the core of this work are two publicly available datasets from the MicroBooNE experiment: the \textbf{Inclusive} sample and the \textbf{Electron Neutrino} sample. The Inclusive sample contains both charged-current (CC) and neutral-current (NC) interactions, as well as various neutrino types, reflecting the true composition of the Booster Neutrino Beam. The Electron Neutrino sample, on the other hand, contains only electron neutrino CC interactions.
+All the data used further in this work are two publicly available datasets from the MicroBooNE experiment: the Inclusive sample and the Electron Neutrino sample. The Inclusive sample contains both charged-current (CC) and neutral-current (NC) interactions, as well as various neutrino types, reflecting the true composition of the Booster Neutrino Beam. The Electron Neutrino sample, on the other hand, contains only electron neutrino CC interactions.
 
-% 2. Section 2.5: Add one sentence about each file format and cite sources
-The MicroBooNE OpenSamples dataset is provided in two formats: HDF5 and art/ROOT. The \textbf{HDF5} format is a hierarchical data format suitable for efficient storage and access to large numerical datasets. The \textbf{art/ROOT} format is based on the ROOT framework, which is commonly used in high-energy physics for storing and analyzing complex event data structures~\cite{hdf5,root}. 
+The MicroBooNE OpenSamples dataset is provided in two formats: HDF5 and art/ROOT. The HDF5 format is a hierarchical data format suitable for efficient storage and access to large numerical datasets. The art/ROOT format is based on the ROOT framework, which is commonly used in high-energy physics for storing and analyzing complex event data structures~\cite{hdf5,root}. 
 
-% 3. Section 2.5: Add sentence about "wires" vs "no wires"
-There are two main types of data samples: \textbf{with wires} and \textbf{no wires}. The "with wires" datasets include full waveform data from the detector wires, allowing for signal reconstruction and image generation. The "no wires" datasets omit this raw waveform information, providing only data collected from scintillators.
+There are two main types of data samples: "with wires" and "no wires." The "with wires" datasets include full waveform data from the detector wires, allowing for signal reconstruction and image generation. The "no wires" datasets omit this raw waveform information and therefore do not allow for image reconstruction.
 
+\section{Events Present}
 
-\subsection{Events Present in the Dataset}
+\subsection{BNB sample}
 
-The distributions of lepton and neutrino energies for the two datasets are shown in Figures~\ref{fig:lepton-inclusive}--\ref{fig:neutrino-nue}. Each figure caption specifies which dataset is being visualized.
+The distributions of lepton and neutrino energies for the two datasets are shown in Figures~\ref{fig:lepton-inclusive}--\ref{fig:neutrino-nue}. 
+
+The BNB (Booster Neutrino Beam, Inclusive) sample contains a total of 24,332 events, all of which are classified as charged-current (CC) interactions. The dataset is composed exclusively of electron neutrinos and antineutrinos, with 19,448 events corresponding to neutrinos (PDG code 12) and 492 to antineutrinos (PDG code $-12$). No muon neutrinos (PDG 14 or $-14$) are present.
 
 \begin{figure}[H]
     \centering
-    \begin{minipage}[t]{0.6\textwidth}
-        \centering
-        \includegraphics[width=0.95\textwidth]{src/leptonElectron.png}
-        \caption{Lepton energy distribution in the \textbf{Inclusive} (BNB) sample. The vertical axis shows the number of events [count].}
-        \label{fig:lepton-inclusive}
-    \end{minipage}
-    \hfill
-    \begin{minipage}[t]{0.6\textwidth}
+    \begin{minipage}[t]{\textwidth}
     \centering
-    \includegraphics[width=0.95\textwidth]{src/neutrinoElectron.png}
-    \caption{Neutrino energy distribution in the \textbf{Inclusive} (BNB) sample. The vertical axis shows the number of events [count].}
-    \label{fig:neutrino-inclusive}
+    \includegraphics[width=0.92\textwidth]{src/leptonElectron.png}
+    \caption{Lepton energy distribution in the Inclusive (BNB) sample. The vertical axis shows the number of events.}
+    \label{fig:lepton-inclusive}
     \end{minipage}
+\begin{minipage}[t]{\textwidth}
+        \centering
+        \includegraphics[width=0.92\textwidth]{src/neutrinoElectron.png}
+        \caption{Neutrino energy distribution in the Inclusive (BNB) sample. The vertical axis shows the number of events.}
+        \label{fig:neutrino-inclusive}
+        \end{minipage}
 \end{figure}
-
-The BNB (Booster Neutrino Beam, Inclusive) sample contains a total of 24,332 events, all of which are classified as charged-current (CC) interactions. The dataset is composed exclusively of electron neutrinos and antineutrinos, with 19,448 events corresponding to neutrinos (PDG code 12) and 492 to antineutrinos (PDG code $-12$). No muon neutrinos (PDG 14 or $-14$) are present.
 
 The energy distribution of neutrino interactions in this sample has a mean value of 1.62~GeV, a median of 1.46~GeV, and a standard deviation of 0.86~GeV. The minimum recorded energy is 0.13~GeV, while the maximum reaches 6.13~GeV.
 
@@ -257,48 +252,44 @@ The associated charged lepton energy distribution exhibits a mean of 0.69~GeV, a
 
 The distributions for the $\nu_e$-enhanced sample are shown in Figures~\ref{fig:lepton-nue} and~\ref{fig:neutrino-nue}.
 
+The $\nu_e$-enhanced sample consists of 19,940 events, containing a broader mix of neutrino types. The majority are muon neutrinos (23,984), followed by smaller numbers of muon antineutrinos (208 with PDG code $-14$), electron neutrinos (134 with PDG code 12), and electron antineutrinos (6 with PDG code $-12$). Of the total, 17,564 events are classified as charged-current (CC), while 6,768 are neutral-current (NC) interactions. Within the charged-current subset, 17,457 events originate from muon neutrinos or antineutrinos, and 107 from electron neutrinos or antineutrinos, indicating a dominance of muon neutrino interactions in this sample.
+
 \begin{figure}[H]
     \centering
-    \begin{minipage}[t]{0.48\textwidth}
-        \centering
-        \includegraphics[width=0.8\textwidth]{src/leptonMuon.png}
-        \caption{Lepton energy distribution in the \textbf{nu\_e}-enhanced sample. The vertical axis shows the number of events [count].}
-        \label{fig:lepton-nue}
-    \end{minipage}
-    \hfill
-    \begin{minipage}[t]{0.48\textwidth}
-    \centering
-    \includegraphics[width=0.8\textwidth]{src/neutrinoMuon.png}
-    \caption{Neutrino energy distribution in the \textbf{nu\_e}-enhanced sample. The vertical axis shows the number of events [count].}
-    \label{fig:neutrino-nue}
-    \end{minipage}
+    \includegraphics[width=0.92\textwidth]{src/leptonMuon.png}
+    \caption{Lepton energy distribution in the nu\_e-enhanced sample. The vertical axis shows the number of events.}
+    \label{fig:lepton-nue}
 \end{figure}
 
-The $\nu_e$-enhanced sample consists of 19,940 events, containing a broader mix of neutrino types. The majority are muon neutrinos (23,984 with PDG code 14), followed by smaller numbers of muon antineutrinos (208 with PDG code $-14$), electron neutrinos (134 with PDG code 12), and electron antineutrinos (6 with PDG code $-12$). Of the total, 17,564 events are classified as charged-current (CC), while 6,768 are neutral-current (NC) interactions. Within the charged-current subset, 17,457 events originate from muon neutrinos or antineutrinos, and 107 from electron neutrinos or antineutrinos, indicating a dominance of muon neutrino interactions in this sample.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.92\textwidth]{src/neutrinoMuon.png}
+    \caption{Neutrino energy distribution in the nu\_e-enhanced sample. The vertical axis shows the number of events.}
+    \label{fig:neutrino-nue}
+\end{figure}
+
 
 The energy distribution shows a mean of 1.20~GeV, a median of 1.08~GeV, and a standard deviation of 0.67~GeV, with values ranging from 0.06~GeV to 6.61~GeV. The corresponding charged lepton energy distribution has a mean of 0.91~GeV, a median of 0.73~GeV, and a standard deviation of 0.67~GeV. Lepton energies range from 0.01~GeV to 5.82~GeV. This distribution suggests a slightly lower-energy spectrum on average, but with a broader mix of interaction types and moderate lepton energy variability.
 
-\begin{figure}[H]
+\subsection{Combined Dataset}
+
+\begin{figure}[h]
     \centering
-    \begin{minipage}[t]{0.48\textwidth}
-        \centering
-        \includegraphics[width=0.8\textwidth]{src/leptonFull.png}
-        \caption{Lepton energy distribution in the \textbf{Combined} dataset (Inclusive + nu\_e-enhanced). The vertical axis shows the number of events [count].}
-        \label{fig:lepton-combined}
-    \end{minipage}
-    \hfill
-    \begin{minipage}[t]{0.48\textwidth}
-    \centering
-    \includegraphics[width=0.8\textwidth]{src/neutrinoFull.png}
-    \caption{Neutrino energy distribution in the \textbf{Combined} dataset (Inclusive + nu\_e-enhanced). The vertical axis shows the number of events [count].}
-    \label{fig:neutrino-combined}
-    \end{minipage}
+    \includegraphics[width=0.92\textwidth]{src/leptonFull.png}
+    \caption{Lepton energy distribution in the combined dataset (Inclusive + nu\_e-enhanced). The vertical axis shows the number of events [count].}
+    \label{fig:lepton-combined}
 \end{figure}
 
-The combined dataset consists of 44,272 events and includes a mix of neutrino interaction types. The dominant component is muon neutrinos (23,984 events with PDG code 14), followed by electron neutrinos (19,582 with PDG 12), electron antineutrinos (498 with PDG $-12$), and a small number of muon antineutrinos (208 with PDG $-14$). Out of the total, 37,504 events are classified as charged-current (CC) interactions, while 6,768 are neutral-current (NC). Within the CC category, 17,457 events originate from muon neutrinos or antineutrinos, and 20,047 from electron neutrinos or antineutrinos, indicating a more balanced representation of flavor types compared to the $\nu_e$-enhanced sample. The charged lepton energy distribution exhibits a mean of 0.79~GeV, a median of 0.63~GeV, and a standard deviation of 0.60~GeV. The energy values range from 0.01~GeV to 5.82~GeV. This suggests a lower average energy compared to the $\nu_e$-enhanced sample, with a more symmetric distribution and substantial contributions from both muon and electron neutrino interactions.
+\begin{figure}[h]
+    \includegraphics[width=0.92\textwidth]{src/neutrinoFull.png}
+    \caption{Neutrino energy distribution in the combined dataset (Inclusive + nu\_e-enhanced). The vertical axis shows the number of events [count].}
+    \label{fig:neutrino-combined}
+\end{figure}
+
+The combined dataset consists of 44,272 events and includes a mix of neutrino interaction types. The dominant component is muon neutrinos (23,984), followed by electron neutrinos (19,582), electron antineutrinos (498), and a small number of muon antineutrinos (208). Out of the total, 37,504 events are classified as charged-current (CC) interactions, while 6,768 are neutral-current (NC). Within the CC category, 17,457 events originate from muon neutrinos or antineutrinos, and 20,047 from electron neutrinos or antineutrinos, indicating a more balanced representation of flavor types compared to the $\nu_e$-enhanced sample. The charged lepton energy distribution exhibits a mean of 0.79~GeV, a median of 0.63~GeV, and a standard deviation of 0.60~GeV. The energy values range from 0.01~GeV to 5.82~GeV. This suggests a lower average energy compared to the $\nu_e$-enhanced sample, with a more symmetric distribution and substantial contributions from both muon and electron neutrino interactions.
 
 % Example LaTeX table for the selected neutrino event statistics
-\begin{table}[H]
+\begin{table}[h]
 \centering
 \caption{Summary of Neutrino Events in the Dataset}
 \begin{tabular}{|l|r|}
@@ -350,11 +341,11 @@ Max (GeV) & 6.13 \\
 \end{tabular}
 \end{table}
 
-\section{Environment Preparation}
+\chapter{Dataset preparation}
 
 The Jupyter notebooks accompanying the MicroBooNE OpenSamples repository recommend creating a Conda environment that includes the necessary packages. While there is nothing inherently wrong with this approach, it does introduce several disadvantages. Beyond general inefficiencies—such as longer environment loading times, higher memory usage, and increased disk space consumption—the most significant issue encountered was related to the sheer number of files generated by Conda distributions.
 
-Both Conda and Miniconda installations can create and maintain hundreds of thousands of files. Although the total disk usage of these files is typically not problematic (many are symbolic links or small metadata files), the system used for processing data enforced strict quotas on the number of files each user could create. The data processing was performed on the ICM UW Okeanos cluster running CentOS 7{SPRAWDZIĆ}. Installing a full Conda distribution brought the user account dangerously close to this limit, which severely impacted the usability of the system. For instance, launching a new Jupyter session became almost impossible, as nearly every action related to managing Jupyter generates additional log files, further pushing against the file quota.
+Both Conda and Miniconda installations can create and maintain hundreds of thousands of files. Although the total disk usage of these files is typically not problematic (many are symbolic links or small metadata files), the system used for processing data enforced strict quotas on the number of files each user could create. The data processing was performed on the ICM UW Okeanos cluster running CentOS 7. Installing a full Conda distribution brought the user account dangerously close to this limit, which severely impacted the usability of the system. For instance, launching a new Jupyter session became almost impossible, as nearly every action related to managing Jupyter generates additional log files, further pushing against the file quota.
 
 Additionally, the environment setup proposed in the MicroBooNE OpenSamples notebooks depended on outdated libraries—most notably \texttt{pynuml} version 0.3, which is no longer maintained and is poorly documented. This package also requires an outdated version of Python (3.7) and depends on a deprecated version of HDF5. These constraints make it effectively impossible to use current versions of many essential packages, which significantly complicates the development process.
 
@@ -366,54 +357,16 @@ Containerization is a method of packaging software and its dependencies into iso
 
 In this specific case, a containerization tool called Singularity was used. Singularity is particularly well-suited for high-performance computing environments, as it enables users to define, build, and execute containers without requiring root privileges. A container definition file was created based on a Ubuntu 22.01 base image. (An image is a static, read-only template with the application and its dependencies, while a container is a running instance of an image, including its own filesystem and processes.) This definition specified the installation of all required dependencies and packages during the container build process. Using this approach made it possible to work with up-to-date software versions, including Python 3.9, pynuml version 25.4.0, and HDF5 version 1.12.2, although these upgrades required some code refactorings to be performed on the code present in OpenSamples notebooks. Moreover, since the resulting container image is stored as a single file, this method also effectively circumvented the file quota limitations encountered with Conda-based setups.
 
-\section{Dataset Preparation}
-
 \subsection{HDF5 File Structure}
 
 Data stored in HDF5 files was separated into multiple tables, each containing a specific type of information. The tables are organized hierarchically, with the root directory containing the main event table and additional subdirectories for other data types. Each table is structured as a collection of records, where each record corresponds to a single event or hit in the detector. The tables are designed to be self-describing, meaning that they include metadata about the data types and structures used within them.
-The HDF5 file structure for the MicroBooNE OpenSamples dataset is organized as follows:
-
-\begin{table}[H]
-\centering
-\begin{tabular}{|l|p{10.5cm}|}
-\hline
-\textbf{Table Name} & \textbf{Description} \\
-\hline
-\texttt{/event\_table} & Stores metadata for individual detector readouts and simulated neutrino interactions. Includes event identifiers, neutrino properties (energy, direction), interaction vertex, and interaction type (charged- or neutral-current). \\
-\hline
-\texttt{/hit\_table} & Contains reconstructed hits from Gaussian pulses on wire waveforms. Includes hit positions, times, plane/wire IDs, and signal properties like integral and RMS. \\
-\hline
-\texttt{/edep\_table} & Holds simulated true energy deposition data within the TPC. Entries link to the associated hit and originating simulated particle. \\
-\hline
-\texttt{/particle\_table} & Stores detailed simulation data for particles from neutrino interactions as simulated by Geant4, including start/end positions, momenta, parent-child relationships, and process labels. \\
-\hline
-\texttt{/opflash\_table} & Contains reconstructed optical flash data detected by PMTs, such as time, width, and spatial barycenter. \\
-\hline
-\texttt{/opflashsumpe\_table} & Provides total photoelectron (PE) counts per PMT for each optical flash, useful for calibrated optical signal reconstruction. \\
-\hline
-\texttt{/ophit\_table} & Details individual PMT hits, including amplitude, width, time, and associated PMT channel. Links to flash and PE sum tables. \\
-\hline
-\texttt{/pandoraHit\_table} & Describes how individual TPC hits are grouped into clusters by the Pandora reconstruction framework. Includes associations to PFParticles and time slices. \\
-\hline
-\texttt{/pandoraPfp\_table} & Stores data for Pandora-reconstructed PFParticles, which represent 3D hit clusters. Contains particle type IDs, vertex info, and classification scores. \\
-\hline
-\texttt{/pandoraPrimary\_table} & Contains metadata for interactions (primaries) identified by Pandora, including neutrino/cosmic classification scores and optical-TPC flash matching quality. \\
-\hline
-\texttt{/wire\_table} & Records full waveform data for each detector wire over 6400 time ticks. Provides raw ADC values for hit reconstruction. Only in ``With Wire'' datasets. \\
-\hline
-\end{tabular}
-\caption{Summary of tables and their contents in the detector data model.}
-\label{tab:data_tables}
-\end{table}
-
-
-\subsection{Final dataset structure}
+The HDF5 file structure for the MicroBooNE OpenSamples dataset contains multiple tables with specific information types. A detailed description of all tables is provided in Appendix~\ref{app:hdf5_structure}.
 
 Because of their smaller size, HDF5 files were used for the initial data extraction. Although the HDF5 format is well-suited for storing large datasets, reading from it can require loading substantial portions of data into memory—a time-consuming operation that makes it impractical to use these files directly for neural network training. Therefore, a decision was made to extract the relevant data and store it in a simpler, more accessible format.
 
 The final extracted dataset consisted of a CSV file containing the composite event ID (run number, subrun number, and event number), the lepton energy, neutrino energy, and the \texttt{is\_cc} value from the event table, as well as the \texttt{PDG} of the interacting neutrino. Additionally, it included the filenames of three image files, each corresponding to one of the three wire planes. These images were generated from the wire readouts and represent visualizations of the recorded signals.
 
-\subsection{General data extraction}
+\subsection{Data extraction}
 
 Data from the \texttt{wire\_table}, \texttt{edep\_table}, and \texttt{lep\_table} were first matched with corresponding events in the \texttt{event\_table} (this was largely based on the code present in the Wireimage.ipynb notebook provided by the authors of the dataset). From each matched record, the lepton energy was extracted from the \texttt{lep\_table}, the neutrino energy from the \texttt{edep\_table}, and the \texttt{is\_cc} value from the \texttt{event\_table}. The \texttt{wire\_table} was used to obtain the wire signals for each event. It was subsequently processed into images, and linked to the corresponding event metadata for downstream analysis.
 
@@ -421,10 +374,9 @@ Data from the \texttt{wire\_table}, \texttt{edep\_table}, and \texttt{lep\_table
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.7\textwidth]{src/with_flag_58.png}
+    \includegraphics[width=0.8\textwidth]{src/with_flag_58.png}
     \caption{Example of a wire readout image}
 \end{figure}
-
 
 Images were generated using data from the wire readouts, where the horizontal axis corresponds to the wire number and the vertical axis to time. Each pixel represents the signal recorded on a specific wire at a given time. To suppress noise, a threshold was applied, below which wire activity was not visualized. Additionally, a saturation limit was introduced to prevent high-intensity signals from dominating the image. Pixel intensities were linearly scaled to an 8-bit range (0--255), and the resulting images were downsampled by a factor of two to reduce dataset size. This procedure was applied to all three wire planes, producing three images per event. These images were later saved as PNG files, and their filenames were stored in an appropriate CSV manifest file (a summary file listing all images and their associated metadata for each event).
 
@@ -456,13 +408,13 @@ To address both issues, each CSV manifest file was loaded into a pandas DataFram
 
 \section{Classification Task and Data Selection}
 
-
+% HERE
 POPRAWIĆ
 The classification task is to distinguish electron neutrino charged current (CC) interactions from all other events based on the wire readout images.
 
 To simplify the initial stages of analysis, the decision was made to focus on the most straightforward and visually distinct case: electron neutrino charged current (CC) interactions. These interactions produce energetic electrons that initiate electromagnetic showers, which leave highly visible and easily identifiable traces in the detector. Based on this, the dataset was divided into two classes—electron neutrino CC interactions and all other types of events. It was further hypothesized that higher-energy neutrinos are likely to produce more energetic electrons, which in turn generate more pronounced and spatially extended showers. Such events are presumed to be easier to detect and classify reliably. To leverage this property, the dataset was further narrowed down by selecting the top 50\% most energetic electron neutrino CC events, thereby prioritizing those cases with the clearest and most informative signatures.
 
-\section{Machine Learning}
+\chapter{Machine learning basics}
 
 Machine learning algorithms aim to find a mapping from a specific set of points in an input space to a corresponding set of points in an output space, both of which are predefined. These algorithms define a procedure for learning such a mapping based on a given set of input-output pairs, commonly referred to as the training data. Once learned, this mapping can be applied to all points in the input space, including those not included in the training set. The general expectation is that the mapping learned from the training data will generalize well to previously unseen data, enabling the algorithm to make accurate predictions or classifications on new inputs.
 
@@ -1246,5 +1198,47 @@ Figure~\ref{fig:conf_matrix} presents the normalized confusion matrix for the te
 \section{Bibliography}
 \bibliographystyle{plain}
 \bibliography{references}
+
+% At the end of your document, before \end{document}
+
+\appendix
+
+\section{HDF5 File Structure}
+\label{app:hdf5_structure}
+
+The complete structure of the HDF5 tables used in the MicroBooNE OpenSamples dataset is detailed below:
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|l|p{10.5cm}|}
+\hline
+\textbf{Table Name} & \textbf{Description} \\
+\hline
+\texttt{/event\_table} & Stores metadata for individual detector readouts and simulated neutrino interactions. Includes event identifiers, neutrino properties (energy, direction), interaction vertex, and interaction type (charged- or neutral-current). \\
+\hline
+\texttt{/hit\_table} & Contains reconstructed hits from Gaussian pulses on wire waveforms. Includes hit positions, times, plane/wire IDs, and signal properties like integral and RMS. \\
+\hline
+\texttt{/edep\_table} & Holds simulated true energy deposition data within the TPC. Entries link to the associated hit and originating simulated particle. \\
+\hline
+\texttt{/particle\_table} & Stores detailed simulation data for particles from neutrino interactions as simulated by Geant4, including start/end positions, momenta, parent-child relationships, and process labels. \\
+\hline
+\texttt{/opflash\_table} & Contains reconstructed optical flash data detected by PMTs, such as time, width, and spatial barycenter. \\
+\hline
+\texttt{/opflashsumpe\_table} & Provides total photoelectron (PE) counts per PMT for each optical flash, useful for calibrated optical signal reconstruction. \\
+\hline
+\texttt{/ophit\_table} & Details individual PMT hits, including amplitude, width, time, and associated PMT channel. Links to flash and PE sum tables. \\
+\hline
+\texttt{/pandoraHit\_table} & Describes how individual TPC hits are grouped into clusters by the Pandora reconstruction framework. Includes associations to PFParticles and time slices. \\
+\hline
+\texttt{/pandoraPfp\_table} & Stores data for Pandora-reconstructed PFParticles, which represent 3D hit clusters. Contains particle type IDs, vertex info, and classification scores. \\
+\hline
+\texttt{/pandoraPrimary\_table} & Contains metadata for interactions (primaries) identified by Pandora, including neutrino/cosmic classification scores and optical-TPC flash matching quality. \\
+\hline
+\texttt{/wire\_table} & Records full waveform data for each detector wire over 6400 time ticks. Provides raw ADC values for hit reconstruction. Only in ``With Wire'' datasets. \\
+\hline
+\end{tabular}
+\caption{Summary of tables and their contents in the detector data model.}
+\label{tab:data_tables}
+\end{table}
 
 \end{document}
