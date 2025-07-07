@@ -44,7 +44,7 @@
 \usepackage{longtable}
 \pagestyle{fancy}
 \fancyhf{} % Clear all headers and footers
-\fancyfoot[R]{\thepage} % Put page number on the right in footer
+\fancyfoot[LO,RE]{\thepage} % Put page number on the right in footer
 \renewcommand{\headrulewidth}{0pt} % Remove header line
 \usepackage[left=2.0cm,right=2.0cm,top=1.5cm,bottom=1.5cm]{geometry}
 
@@ -60,22 +60,22 @@
 
 \nralbumu{417909}
 
-\title{Calculations of electric dipole moments in two-electron diatomic molecules}
+\title{Event classification in liquid argon time projection chambers using machine learning methods}
 
-\tytulang{Obliczenia elektrycznych momentów dipolowych dla dwuelektronowych dwuatomowych cząsteczek}
+\tytulang{Klasyfikacja zdarzeń w komorach projekcyjnych z ciekłym argonem przy użyciu metod uczenia maszynowego}
 
 \kierunek{Physics}
 
 %\specjalnosc{Metody jądrowe w fizyce ciała stałego}
 
-\opiekun{\\prof. dr hab. Krzysztof Pachucki\\Chair of quantum optics and atomic physics\\ Institute of Theoretical Physics\\\vspace{0.3cm plus 1.5fill}\\mgr Michał Siłkowski\\Chair of quantum optics and atomic physics\\ Institute of Theoretical Physics\\}
+\opiekun{\\dr hab. Katarzyna Grzelak\\ Institute of Experimental Physics\\ Faculty of Physics, University of Warsaw\\\vspace{0.3cm plus 1.5fill}\\dr hab. Artur Kalinowski\\ Institute of Experimental Physics\\ Faculty of Physics, University of Warsaw \\}
 
 %\dziedzina{13.200}
 \dziedzina{13.2 Fizyka}
 
-\date{September 2022}
+\date{July 2025}
 
-\keywords{High-precision calculations, dipole moment, two-electron diatomic molecules, helium hydride ion, Kołos-Wolniewicz, variational method, electronic structure}
+\keywords{deep learning, convolutional neural networks, transformers, neutrino classification, LArTPC, MicroBooNE, AlexNet, LeNet, image classification}
 
 \overfullrule=1pt
 \begin{document}
@@ -83,20 +83,19 @@
 \let\cleardoublepage\clearpage
 
 \begin{abstract}
-    An efficient approach to high-precision calculations of expectation values of electronic operators in two-electron diatomic molecules is outlined and explored. A detailed description of the method and its usefulness is provided and illustrated with numerical calculations of the permanent dipole moment and energy of the HeH\textsuperscript{+} molecule in its ground state. A comparison of obtained results against values present in the literature is provided and discussed.
+The objective of this thesis was to evaluate the effectiveness of deep learning methods in classifying neutrino interactions in Liquid Argon Time Projection Chambers (LArTPCs), using data from the MicroBooNE OpenSamples dataset. The classification task focused on distinguishing charged current electron neutrino interactions from other types of events. Several neural network architectures were tested: a shallow LeNet-like model, a deeper AlexNet-based convolutional network, and a transformer-based model.The LeNet-like model failed to learn any meaningful features and did not yield usable results. AlexNet-like network achieved high classification performance, reaching accuracies up to 85.97\%. The transformer model achieved reasonable results with an accuracy of 66.03\%. These outcomes suggest that the aforementioned classification task is solvable with current machine learning techniques. Further improvement is likely achievable through training on larger datasets, employing more complex architectures, or including additional input data from other wire planes.
+
 \end{abstract}
 
 \tableofcontents
 
-% \newpage
-
 \chapter*{Introduction}
 
-Neutrinos are fundamental particles that come in three known types (also referred to as flavors). They interact only via the weak nuclear force, making them difficult to detect. In the late 1960s, experiments observed a deficit in the number of solar neutrinos, which was later explained by the phenomenon of neutrino oscillations, which have since been the subject of extensive experimental and theoretical investigation. The mechanism by which neutrinos acquire mass remains unknown, since their masses have not yet been measured.
+Neutrinos are fundamental particles that come in three known types (also referred to as flavors). They interact only via the weak nuclear force, making them difficult to detect. In the late 1960s, experiments observed a deficit in the number of solar neutrinos, which was later explained by the phenomenon of neutrino oscillations, which have since been the subject of extensive experimental and theoretical investigation\cite{NeutrionoOscillationsHistory}. The mechanism by which neutrinos acquire mass remains unknown, since their masses have not yet been measured.
 
-In addition, several experimental anomalies have been reported that deviate from the predictions of the three-flavor neutrino oscillation model. These include results from the LSND and MiniBooNE experiments, as well as the reactor neutrino anomaly. In all cases, the observed number of neutrinos does not align with the expectations derived from standard oscillation models.
+In addition, several experimental anomalies have been reported that deviate from the predictions of the three-flavor neutrino oscillation model. These include results from the LSND and MiniBooNE experiments, as well as the reactor neutrino anomaly. In all cases, the observed number of neutrinos does not align with the expectations derived from standard oscillation models\cite{neutrinoAnomally}.
 
-One possible explanation for these discrepancies involves extending the current model by introducing additional neutrino flavors. In particular, the hypothesis of sterile neutrinos—neutrinos that do not interact via the weak nuclear force—has been proposed. If such a hypothesis would be confirmed it would require an extension of the Standard Model of particle physics. These potential non-interactive neutrinos have even been considered as potential candidates for dark matter.
+One possible explanation for these discrepancies involves extending the current model by introducing additional neutrino flavors. In particular, the hypothesis of sterile neutrinos—neutrinos that do not interact via the weak nuclear force—has been proposed. If such a hypothesis would be confirmed it would require an extension of the Standard Model of particle physics. These potential non-interactive neutrinos have even been considered as potential candidates for dark matter\cite{neutrinoDarkMatter}.
 
 Neutrino oscillations—both standard and non-standard—have so far been studied primarily using water or ice based Cherenkov detectors and scintillation detectors. More recently, liquid argon detectors have started being more commonly deployed.
 
@@ -111,11 +110,11 @@ This work explores the application of machine learning methods to this problem. 
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.7\textwidth]{src/xfig1_3nu.pdf}
-    \caption{Feynman diagram illustrating neutrino interactions.}
+    \caption{Feynman diagram illustrating neutrino interactions.\cite{neutrinoFeynmann}}
     \label{fig:Feynman_diagram_neutrino}
 \end{figure}
 
-Neutrinos are electrically neutral, spin-$\frac{1}{2}$ elementary particles that belong to the lepton family within the Standard Model of particle physics. They exist in three distinct flavors, corresponding to the three charged leptons: the electron neutrino ($\nu_e$), the muon neutrino ($\nu_\mu$), and the tau neutrino ($\nu_\tau$).
+Neutrinos are electrically neutral, spin-$\frac{1}{2}$ elementary particles that belong to the lepton family within the Standard Model of particle physics. They exist in three distinct flavors, corresponding to the three charged leptons: the electron neutrino ($\nu_e$), the muon neutrino ($\nu_\mu$), and the tau neutrino ($\nu_\tau$).\cite{neutrinoFeynmann}
 
 These flavor classifications arise from the weak decay processes mediated by the $W$ boson, in which a charged lepton is produced alongside a corresponding neutrino. For instance, in a $W^-$ decay producing an electron, an electron neutrino is emitted; similarly, decays yielding a muon or tau lepton produce a muon or tau neutrino, respectively. Feynman diagrams of these interactions are shown in figure~\ref{fig:Feynman_diagram_neutrino}.
 
@@ -123,7 +122,7 @@ Due to their lack of electric charge, negligible mass, and absence of color char
 
 In charged current interactions, the neutrino exchanges a $W$ boson with a target particle, resulting in the production of a charged lepton of the same flavor, which enables neutrino flavor identification. In contrast, neutral current interactions involve the exchange of a $Z^0$ boson and leave the neutrino unchanged, making the final state flavor-indistinguishable.
 
-The weak interaction is characterized by a very short range, typically on the order of $10^{-17}$ to $10^{-18}$ meters, which makes neutrino interactions with matter extremely rare. As a result, detecting neutrinos requires either very intense neutrino beams and/or very large detectors to observe a statistically significant number of interactions.
+The weak interaction is characterized by a very short range, typically on the order of $10^{-17}$ to $10^{-18}$ meters\cite{WeakInteraction}, which makes neutrino interactions with matter extremely rare. As a result, detecting neutrinos requires either very intense neutrino beams and/or very large detectors to observe a statistically significant number of interactions.
 
 \section{Liquid Argon Detectors}
 
@@ -429,8 +428,7 @@ For these reasons, after some deliberation, a decision was made to divide the da
 
 To simplify the problem further (by narrowing the data down to interactions with the most pronounced electron showers), an additional dataset was created. This subset contains only the 50\% most energetic electron neutrino charged current interactions. The size of the other class was also reduced arbitrarily to avoid class imbalance. This dataset is further referred to in the work as \texttt{top50}.
 
-All the machine learning models discussed further in this work were trained on these aforementioned classification tasks. A summary of the number of members of each class for each dataset can be found in Table \ref{tab:dataset_stats}.
-
+All the machine learning models discussed further in this work were trained on these aforementioned classification tasks. A summary of the number of members of each class for each dataset can be found in Table \ref{tab:dataset_stats}. For simplicity, every network in this work was trained only on images created based on the wire readouts from the plane 2.
 
 \begin{table}[h]
     \centering
@@ -736,17 +734,16 @@ The output of a convolutional layer is an array (or tensor) with reduced spatial
 
 \subsubsection{Feature Recognition Mechanism}
 
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.7\textwidth]{src/convViz.png}
-    \caption{Visualization of feature maps learned by different convolutional layers of a CNN. Each row corresponds to a different convolutional layer (from early to late), and each column shows a visualization of the input pattern that maximally activates a specific filter. \cite{exCNN}}
-    \label{fig:convviz}
-\end{figure}
-
-
 During backpropagation, each element of every kernel is treated as a learnable parameter and is optimized using gradient descent. The gradients of these parameters are computed with respect to each input element (more precisely, with respect to each considered subsection of the input array). These gradients are then aggregated—typically by averaging—and the kernel parameters are updated accordingly.
 
 The general objective is for the kernels to adjust themselves to specific features of the input image—that is, to produce high activation values when a particular feature is present and low values when it is absent. The calculated gradients for each subsection of the input array depend on the values of the inputs. Consequently, it is assumed that during training, the elements of the kernels are updated in such a way that each kernel learns to recognize a distinct feature in the input array.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.55\textwidth]{src/convViz.png}
+    \caption{Visualization of feature maps learned by different convolutional layers of a CNN. Each row corresponds to a different convolutional layer (from early to late), and each column shows a visualization of the input pattern that maximally activates a specific filter. \cite{exCNN}}
+    \label{fig:convviz}
+\end{figure}
 
 Figure~\ref{fig:convviz} shows visualizations of features that maximally activate a selection filters across different convolutional layers of a CNN taken from \cite{activations}.
 
@@ -768,7 +765,7 @@ Pooling layers operate independently on each feature map (channel), where a chan
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.6\textwidth]{src/mlp.jpg}
+\includegraphics[width=0.8\textwidth]{src/mlp.jpg}
 \caption{Illustration of a multi-layer perceptron architecture}
 \end{figure}
 
@@ -1074,7 +1071,6 @@ The strong performance of the AlexNet-like network suggests that it was able to 
 
 Taking into account the high accuracy of the AlexNet-like network, it can be reasonably assumed that the classification problems, as previously stated, are solvable using deep learning techniques. To extend the discussion, another approach to image classification was attempted—namely, one involving an image transformer architecture. The details of this approach are described in the next chapter.
 
-
 \chapter{Transformer}
 
 The transformer is a deep learning architecture introduced for processing sequential data, relying entirely on attention mechanisms and eliminating recurrence. It enables high parallelization and long-range dependency modeling, making it suitable for a wide range of tasks, including computer vision.
@@ -1267,7 +1263,7 @@ The specific transformer image transformer that ended up being used was largely 
 
 \subsection{Training procedure}
 
-The transformer was trained for up to 10 epochs using a dataset split into training and validation batches. The validation set consisted of 1000 batches taken from the dataset, while the rest was used for training. An Adam optimizer with an exponentially decaying learning rate starting at 0.001 was used, with the learning rate decreasing by 5\% every 10 full passes through the training data. The model optimized a binary cross-entropy loss and tracked accuracy as a metric. Training incorporated early stopping, halting if the validation accuracy did not improve for 10 consecutive epochs.
+This time, both the transormer itself as well as the training routine were implemented in tensorflow. For simplicity, the transformer only trained on the top50 dataset. Training was run for 10 epochs using a dataset split into training and validation batches. The validation set consisted of 1000 batches taken from the dataset, while the rest was used for training. An Adam optimizer with an exponentially decaying learning rate starting at 0.001 was used, with the learning rate decreasing by 5\% every 10 full passes through the training data. The model optimized a binary cross-entropy loss. Training incorporated early stopping, halting if the validation accuracy did not improve for 10 consecutive epochs.
 
 \section{Transformer training results and evaluation}
 
@@ -1335,19 +1331,38 @@ The transformer-based model demonstrated reasonable performance on the classific
 
 The transformer's poorer performance is somewhat expected. The training set was relatively small, and as mentioned in \cite{ViT}, the advantages of transformer architectures over CNNs typically emerge only when trained on sufficiently large datasets. The specific transformer architecture used was also relatively simple, which may have limited its ability to extract higher-level features from the data. A more complex architecture, however, could not have been efficiently trained on the available amount of data. It can be reasonably assumed that the performance of the transformer could be improved by training on a larger dataset, as well as by employing a more complex architecture.
 
-\chapter{Conclusion}
+\chapter{Conclusions}
+
+This thesis explored the application of machine learning techniques—specifically convolutional neural networks (CNNs) and image transformers—to the task of classifying neutrino interactions within Liquid Argon Time Projection Chambers (LArTPCs), using the MicroBooNE OpenSamples dataset. The main classification goal was to distinguish charged current (CC) electron neutrino interactions from other types of events.
+
+The initial approach involved a LeNet-like architecture, which failed to learn any meaningful features from the data, resulting in poor classification performance.
+A variation on AlexNet achived significantly better results, acheiving an accuracies as high 85.97\%.
+
+An image transformer architecture was also evaluated. Although its performance was lower than that of the AlexNet-like model, it still achieved an accuracy of 66.03\% on the test set. This can be largely explained by the relatively small size of the training dataset, as transformers typically require larger datasets to outperform CNNs. The performance achived by the transformer suggests that introduction of a larger dataset could well lead to improved results.
+
+The results obtained throughout the thesis strongly suggest that the classification of neutrino interactions in LArTPCs is a solvable problem using deep learning approaches. Further improvements could likely be achieved through training on larger datasets, using more complex model architectures, and optimizing training parameters.
+
+Additionally, incorporating signals from other wire planes could enhance model performance by providing richer spatial information. However, integrating such inputs into the model is a non-trivial task.
 
 \newpage
 
-\section{Bibliography}
+% At the end of your document, before \end{document}
+
+
+\listoffigures
+\newpage
+
+\listoftables
+\newpage
+
+\section*{Bibliography}
 \bibliographystyle{plain}
 \bibliography{references}
-
-% At the end of your document, before \end{document}
+\newpage
 
 \appendix
 
-\section{HDF5 File Structure}
+\section*{Appendix: HDF5 File Structure}
 \label{app:hdf5_structure}
 
 The complete structure of the HDF5 tables used in the MicroBooNE OpenSamples dataset is detailed below:
@@ -1384,5 +1399,7 @@ The complete structure of the HDF5 tables used in the MicroBooNE OpenSamples dat
 \caption{Summary of tables and their contents in the detector data model.}
 \label{tab:data_tables}
 \end{table}
+
+\newpage
 
 \end{document}

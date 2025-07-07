@@ -3,3 +3,5 @@
 *.synctex*
 *.toc
 *.log
+*.lof
+*.lot
