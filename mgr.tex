@@ -1,18 +1,18 @@
 % filepath: c:\Users\wojte\Desktop\mgr.tex
 \documentclass{pracalicmgr}
 \usepackage[utf8]{inputenc}
-\usepackage{geometry}
+\usepackage{booktabs}
 \usepackage{amsmath}
 \usepackage{hyperref}
 \usepackage{graphicx}
 \usepackage{parskip}
 \usepackage{setspace}
+\usepackage{subcaption}  % Add this line
 \usepackage{float}
 \usepackage{amsmath}
 \usepackage{enumitem}
 \usepackage{amsmath}
 \usepackage{amssymb}
-\usepackage{geometry}
 \usepackage{caption}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
@@ -42,6 +42,8 @@
 \usepackage{braket}
 \usepackage{amsmath}
 \usepackage{longtable}
+
+
 \pagestyle{fancy}
 \fancyhf{} % Clear all headers and footers
 \fancyfoot[LO,RE]{\thepage} % Left on even pages, right on odd pages
@@ -53,16 +55,16 @@
   \fancyfoot[LO,RE]{\thepage} % Left on even pages, right on odd pages
   \renewcommand{\headrulewidth}{0pt} % Remove header line
 }
-\usepackage[
-  textheight=24.5cm,
-  textwidth=16cm,
-  top=-0.5cm,
-  headheight=0cm,
-  left=0.5cm,
-  right=-0.2cm,
-  oddsidemargin=0.5cm,
-  evensidemargin=-0.5cm
-]{geometry}
+% \usepackage[
+%   textheight=24.5cm,
+%   textwidth=16cm,
+%   top=-0.5cm,
+%   headheight=0cm,
+%   left=0.5cm,
+%   right=-0.2cm,
+%   oddsidemargin=0.5cm,
+%   evensidemargin=-0.5cm
+% ]{geometry}
 
 
 \usepackage{wrapfig}
@@ -90,7 +92,7 @@
 
 \date{July 2025}
 
-\keywords{deep learning, convolutional neural networks, transformers, neutrino classification, LArTPC, MicroBooNE, AlexNet, LeNet, image classification}
+\keywords{deep learning, convolutional neural networks, transformers, neutrino classification, MicroBooNE, AlexNet, LeNet, image classification, LArTPC}
 
 \overfullrule=1pt
 \begin{document}
@@ -240,7 +242,7 @@ Two MicroBooNE datasets are opened to the public. They contain simulated neutrin
 
 All the data used further in this work are two publicly available datasets from the MicroBooNE experiment: the Inclusive sample and the Electron Neutrino sample \cite{ubooneOpenSamples}. The Inclusive sample contains both charged-current (CC) and neutral-current (NC) interactions, as well as various neutrino types, reflecting the true composition of the Booster Neutrino Beam. The Electron Neutrino sample, on the other hand, contains only electron neutrino CC interactions.
 
-The MicroBooNE OpenSamples dataset is provided in two formats: HDF5 and art/ROOT. The HDF5 format is a hierarchical data format suitable for efficient storage and access to large numerical datasets. The art/ROOT format is based on the ROOT framework, which is commonly used in high-energy physics for storing and analyzing complex event data structures~\cite{hdf5,root}. 
+The MicroBooNE OpenSamples dataset is provided in two formats: HDF5 and ROOT. The HDF5 format is a hierarchical data format suitable for efficient storage and access to large numerical datasets. The ROOT format is based on the ROOT framework, which is commonly used in high-energy physics for storing and analyzing complex event data structures~\cite{hdf5,root}. 
 
 There are two main types of data samples: "with wires" and "no wires." The "with wires" datasets include full waveform data from the detector wires, allowing for signal reconstruction and image generation. The "no wires" datasets omit this raw waveform information and therefore do not allow for image reconstruction.
 
@@ -254,18 +256,16 @@ The $\nu_e$-enhanced sample consists of 19,940 events, containing a broader mix 
 
 \begin{figure}[H]
     \centering
-    \begin{minipage}[t]{\textwidth}
-        \centering
-        \includegraphics[width=0.92\textwidth]{src/leptonMuon.png}
-        \caption{Lepton energy distribution in the Inclusive (BNB) sample. The vertical axis shows the number of events.}
-        \label{fig:lepton-inclusive}
-    \end{minipage}
-    \begin{minipage}[t]{\textwidth}
-        \centering
-        \includegraphics[width=0.92\textwidth]{src/neutrinoMuon.png}
-        \caption{Neutrino energy distribution in the Inclusive (BNB) sample. The vertical axis shows the number of events.}
-        \label{fig:neutrino-inclusive}
-    \end{minipage}
+    \includegraphics[width=0.75\textwidth]{src/leptonMuon.png}
+    \caption{Lepton energy distribution in the Inclusive (BNB) sample. The vertical axis shows the number of events.}
+    \label{fig:lepton-inclusive}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.75\textwidth]{src/neutrinoMuon.png}
+    \caption{Neutrino energy distribution in the Inclusive (BNB) sample. The vertical axis shows the number of events.}
+    \label{fig:neutrino-inclusive}
 \end{figure}
 
 The energy distribution of neutrino interactions in this sample has a mean value of 1.62~GeV, a median of 1.46~GeV, and a standard deviation of 0.86~GeV. The minimum recorded energy is 0.13~GeV, while the maximum reaches 6.13~GeV.
@@ -280,14 +280,14 @@ The BNB (Booster Neutrino Beam, Inclusive) sample contains a total of 24,332 eve
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.92\textwidth]{src/leptonElectron.png}
+    \includegraphics[width=0.75\textwidth]{src/leptonElectron.png}
     \caption{Lepton energy distribution in the nu\_e-enhanced sample. The vertical axis shows the number of events.}
     \label{fig:lepton-nue}
 \end{figure}
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.92\textwidth]{src/neutrinoElectron.png}
+    \includegraphics[width=0.75\textwidth]{src/neutrinoElectron.png}
     \caption{Neutrino energy distribution in the nu\_e-enhanced sample. The vertical axis shows the number of events.}
     \label{fig:neutrino-nue}
 \end{figure}
@@ -384,7 +384,7 @@ Images were generated using data from the wire readouts, where the horizontal ax
 
 \subsection{Final Dataset}
 
-The final dataset consisted 132,816 PNG images, each representing a wire readout from the MicroBooNE detector alongside 38 CSV manifest files, each representing events form a single HDF5 file. This dataset turend out to contain approximately 13~GB of data, with each image file averaging around 100~KB in size.
+The final dataset consisted 132,816 PNG images, each representing a wire readout from the MicroBooNE detector alongside 38 CSV manifest files, each representing events form a single HDF5 file. This dataset turned out to contain approximately 13~GB of data, with each image file averaging around 100~KB in size.
 
 \section{Further Dataset Processing}
 
@@ -392,7 +392,7 @@ The final dataset consisted 132,816 PNG images, each representing a wire readout
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.7\textwidth]{src/totalSparseDense.png}
+    \includegraphics[width=0.55\textwidth]{src/totalSparseDense.png}
     \caption{Comparison of total memory usage between dense and sparse array representations.}
     \label{fig:memRedTot}
 \end{figure}
@@ -402,7 +402,7 @@ Although the final image dataset occupied approximately 13~GB on disk, this was 
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.7\textwidth]{src/sparseDenseComp.png}
+    \includegraphics[width=0.55\textwidth]{src/sparseDenseComp.png}
     \caption{Comparison of average memory usage between dense and sparse array representations.}
     \label{fig:memRedAvg}
 \end{figure}
@@ -423,17 +423,7 @@ To address both issues, each CSV file was loaded into a pandas DataFrame. Three 
 \label{fig:electron_shower}
 \end{figure}
 
-A general heuristic can be assumed: the more significant the visual difference between two classes in a classification problem, the better an image classification algorithm will perform. However, the problem should remain non-trivial and possess potential scientific utility.
-
-As mentioned before, charged current neutrino interactions produce leptons. The different types of leptons resulting from these interactions can be distinguished. When passing through a LArTPC chamber, electrons—produced in electron neutrino interactions—generate electromagnetic showers. These showers are highly visible and have a very distinguishable shape (they appear as 'showers', not tracks), making them easily identifiable \ref{fig:electron_shower}.
-
-For these reasons, the dataset was divided based on whether or not a charged current electron neutrino interaction occurred in a given sample.
-
-To simplify the problem further (by narrowing the data down to interactions with the most pronounced electron showers), an additional dataset was created. This subset contains only the 50\% most energetic electron neutrino charged current interactions. The size of the other class was also reduced arbitrarily to avoid class imbalance. This dataset is further referred to in the work as \texttt{top50}.
-
-All the machine learning models discussed further in this work were trained on these aforementioned classification tasks. A summary of the number of members of each class for each dataset can be found in Table \ref{tab:dataset_stats}. For simplicity, every network in this work was trained only on images created based on the wire readouts from the plane 2.
-
-\begin{table}[h]
+\begin{table}[H]
     \centering
     \caption{Summary statistics of the full and \texttt{top50} datasets used for classification.}
     \label{tab:dataset_stats}
@@ -446,6 +436,16 @@ All the machine learning models discussed further in this work were trained on t
         \bottomrule
     \end{tabular}
 \end{table}
+
+A general heuristic can be assumed: the more significant the visual difference between two classes in a classification problem, the better an image classification algorithm will perform. However, the problem should remain non-trivial and possess potential scientific utility.
+
+As mentioned before, charged current neutrino interactions produce leptons. The different types of leptons resulting from these interactions can be distinguished. When passing through a LArTPC chamber, electrons—produced in electron neutrino interactions—generate electromagnetic showers. These showers are highly visible and have a very distinguishable shape (they appear as 'showers', not tracks), making them easily identifiable \ref{fig:electron_shower}.
+
+The dataset was therefore divided based on whether or not a charged current electron neutrino interaction occurred in a given sample.
+
+To simplify the problem further (by narrowing the data down to interactions with the most pronounced electron showers), an additional dataset was created. This subset contains only the 50\% most energetic electron neutrino charged current interactions. The size of the other class was also reduced arbitrarily to avoid class imbalance. This dataset is further referred to in the work as \texttt{top50}.
+
+All the machine learning models discussed further in this work were trained on these aforementioned classification tasks. A summary of the number of members of each class for each dataset can be found in Table \ref{tab:dataset_stats}. For simplicity, every network in this work was trained only on images created based on the wire readouts from the plane 2.
 
 \chapter{Machine learning fundamentals}
 
@@ -503,18 +503,18 @@ Activation functions introduce non-linearity into the model, allowing the networ
 
 \paragraph{ReLU}
 
-\begin{figure}[H]
-\centering
-\includegraphics[width=0.7\textwidth]{src/relu.png}
-\caption{Graph of the ReLU activation function.\cite{raschkaRelu}}
-\label{fig:relu}
-\end{figure}
-
 The Rectified Linear Unit (ReLU) is a widely used activation function defined as:
 
 \[
 g(x) = \max(0, x)
 \]
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.5\textwidth]{src/relu.png}
+\caption{Graph of the ReLU activation function.\cite{raschkaRelu}}
+\label{fig:relu}
+\end{figure}
 
 Example plot of such function is shown in figure~\ref{fig:relu}.
 
@@ -522,7 +522,7 @@ Example plot of such function is shown in figure~\ref{fig:relu}.
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.7\textwidth]{src/softmax.pdf}
+\includegraphics[width=0.55\textwidth]{src/softmax.pdf}
 \caption{Softmax output $y_0$ as a function of input $x_0$, with all other inputs fixed at zero ($x_1 = x_2 = \ldots = 0$), for different numbers of total inputs: 2, 3, and 10 \cite{softmaxRef}.}
 \label{fig:softmax}
 \end{figure}
@@ -540,7 +540,7 @@ This property makes it well-suited for multi-class classification tasks, where e
 The quality of the model's predictions is assessed using a loss function 
 
 \[
-\( \mathcal{L}(\hat{y}, y) \)
+\mathcal{L}(\hat{y}, y)
 \]
 
 Here $y$ stands for the true target value, while \( \hat{y} = f(\mathbf{x}; \boldsymbol{\theta}) \) is the model's prediction for a given input \( \mathbf{x} \).
@@ -568,7 +568,7 @@ This loss penalizes incorrect confident predictions more heavily and encourages 
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.85\textwidth]{src/gradienDescent.png}
+    \includegraphics[width=0.75\textwidth]{src/gradienDescent.png}
     \caption{Gradient descent visualization. A local minimum is achieved by taking steps of a predefined size in the direction of the steepest descent\cite{Lau2023LearningDS}.}
 \end{figure}
 
@@ -670,7 +670,7 @@ Normalizing the matrix enables interpretation in terms of proportions, helping t
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.6\textwidth]{src/roc-curveUp.jpg}
+    \includegraphics[width=0.5\textwidth]{src/roc-curveUp.jpg}
     \caption{Visualization of the ROC curve. The x-axis represents the false positive rate (FPR), while the y-axis represents the true positive rate (TPR). The diagonal line represents a random classifier, whil the linies above it represent classifiers with varying levels of performance\cite{ROCEG}.}
     \label{fig:roc_curve}
 \end{figure}
@@ -689,13 +689,13 @@ Each \((\text{FPR}, \text{TPR})\) pair is plotted as a point in 2D space, with F
 
 \begin{figure}[H]
     \centering
-    \begin{minipage}[t]{0.48\textwidth}
+    \begin{minipage}[t]{0.45\textwidth}
         \centering
         \includegraphics[width=\textwidth]{src/auc_0-65.png}
         % \caption{Caption for conv1.pdf}
     \end{minipage}
-    \hfill
-    \begin{minipage}[t]{0.48\textwidth}
+    % \hfill
+    \begin{minipage}[t]{0.45\textwidth}
         \centering
         \includegraphics[width=\textwidth]{src/auc_0-93.png}
         % \caption{Caption for conv2.pdf}
@@ -1117,12 +1117,12 @@ The embedding matrix consists of trainable parameters and is optimized jointly w
 
 \begin{figure}[H]
     \centering
-    \begin{minipage}{\textwidth}
+    \begin{minipage}{0.8\textwidth}
         \centering
-        \includegraphics[width=0.9\textwidth]{src/embedings.png}
+        \includegraphics[width=\textwidth]{src/embedings.png}
     \end{minipage}
     \vspace{0.2cm}
-    \begin{minipage}{\textwidth}
+    \begin{minipage}{0.7\textwidth}
         \centering
         \begin{align*}
         PE(pos, 2i) &= \sin\left(\frac{pos}{10000^{\frac{2i}{d_{\text{model}}}}}\right) \\
@@ -1150,7 +1150,7 @@ Encoder blocks serve as the fundamental building blocks of transformers. Inputs 
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.5\textwidth]{src/scaledDotProd.png}
+    \includegraphics[width=0.4\textwidth]{src/scaledDotProd.png}
     \caption{Graphic representation of a single attention head. The input query, key, and value matrices are passed through a scaled dot-product attention mechanism, which computes attention scores and produces the output.\cite{Vaswani2017Attention}}
     \label{fig:singleAttentionHead}
 \end{figure}
@@ -1172,7 +1172,7 @@ Finally, these weights are used to compute a weighted sum of the value vectors, 
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.5\textwidth]{src/multiHead.png}
+    \includegraphics[width=0.4\textwidth]{src/multiHead.png}
     \caption{Graphic representation of a multi-head attention mechanism. The input query, key, and value matrices are passed through multiple independent attention heads, each computing its own attention output. The outputs of all heads are concatenated and projected back to the original dimensionality\cite{Vaswani2017Attention}.}
     \label{fig:multiHeadAttention}
 \end{figure}
@@ -1204,7 +1204,7 @@ A visual overview of the multi-head attention mechanism is provided in Figure~\r
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.6\textwidth]{src/ResBlock.png}
+    \includegraphics[width=0.5\textwidth]{src/ResBlock.png}
     \caption{Graphic representation of a residual connection\cite{resConn}.}
     \label{fig:resCon}
 \end{figure}
@@ -1225,7 +1225,7 @@ Implementation of these layers was empirically shown to improve convergence and 
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.2\textwidth]{src/transformerBlockSingle.pdf}
+    \includegraphics[width=0.5\textwidth]{src/transformerBlockSingle.pdf}
     \caption{Visual representation of a transformer block. \cite{transformerBlockSingle}}
     \label{fig:transformerEncoder}
 \end{figure}
@@ -1236,7 +1236,7 @@ Each encoder block consists of a multi-head attention mechanism, the outputs of 
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.2\textwidth]{src/transformerEncoder.pdf}
+    \includegraphics[width=0.1\textwidth]{src/transformerEncoder.pdf}
     \caption{Visual representation of a full transformer. \cite{Vaswani2017Attention}}
     \label{fig:transformerEncoder}
 \end{figure}
@@ -1263,7 +1263,7 @@ The general hope is that though these interactions it will gradually aggregate g
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.7\textwidth]{src/imNetEncodings.pdf}
+    \includegraphics[width=0.4\textwidth]{src/imNetEncodings.pdf}
     \caption{Cosine similarity of positional encoding for image patches from the original Vision Transformer paper. Embeddings for patches close to each other are similar\cite{ViT}.}
     \label{fig:imNetEncodings}
 \end{figure}
@@ -1278,7 +1278,7 @@ Figure~\ref{fig:imNetEncodings} shows how positional encodings correlate spatial
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.8\textwidth]{src/visNet.pdf}
+    \includegraphics[width=0.7\textwidth]{src/visNet.pdf}
     \caption{Visual transformer architecture visualized\cite{ViTFUllGraph}}
     \label{fig:visNetArch}
 \end{figure}
@@ -1384,8 +1384,8 @@ Additionally, incorporating signals from other wire planes could enhance model p
 \listoftables
 \newpage
 
-\section*{Bibliography}
-\bibliographystyle{plain}
+% \section*{Bibliography}
+\bibliographystyle{abbrv}
 \bibliography{references}
 \newpage
 
