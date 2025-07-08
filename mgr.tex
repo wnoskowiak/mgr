@@ -119,7 +119,7 @@ Neutrinos are fundamental particles that come in three known types (also referre
 
 In addition, several experimental anomalies have been reported that deviate from the predictions of the three-flavor neutrino oscillation model. These include results from the LSND and MiniBooNE experiments, as well as the reactor neutrino anomaly. In all cases, the observed number of neutrinos does not align with the expectations derived from standard oscillation models\cite{neutrinoAnomally}.
 
-One possible explanation for these discrepancies involves extending the current model by introducing additional neutrino flavors. In particular, the hypothesis of sterile neutrinos—neutrinos that do not interact via the weak nuclear force—has been proposed. If such a hypothesis were to be confirmed, it would require an extension of the Standard Model of particle physics. These potential non-interactive neutrinos have even been considered as potential candidates for dark matter\cite{neutrinoDarkMatter}.
+One possible explanation for these discrepancies involves extending the current model by introducing additional neutrino flavors. In particular, the hypothesis of sterile neutrinos — neutrinos that do not interact via the weak nuclear force—has been proposed. If such a hypothesis were to be confirmed, it would require an extension of the Standard Model of particle physics. These potential non-interactive neutrinos have even been considered as potential candidates for dark matter\cite{neutrinoDarkMatter}.
 
 Neutrino oscillations—both standard and non-standard—have so far been studied primarily using water or ice based Cherenkov detectors and scintillation detectors. More recently, liquid argon (LAr) detectors have started being more commonly deployed. One of the largest currently operating LAr detectors is the 170-ton MicroBooNE detector at Fermilab, which was built primarily to investigate the excess of electron neutrino events observed in the MiniBooNE experiment. At the same time, MicroBooNE serves as a testbed for the future large-scale (planned 40 kt) LAr detector—DUNE. (A more detailed discussion of DUNE will be presented in Chapter 2.)
 
@@ -710,6 +710,8 @@ The Area Under the Curve (AUC) summarizes the ROC curve in a single scalar value
 
 % \textit{Source:} \url{file:///C:/Users/wojte/Downloads/s13244-018-0639-9.pdf}
 
+All of the information in this section was taken from \cite{CNNExplained}.
+
 Convolutional neural networks (CNNs) are a class of machine learning algorithms designed to automatically and adaptively learn spatial hierarchies of features, ranging from low-level edges to high-level semantic patterns. They consist of stacked convolutional and pooling layers responsible for feature extraction, followed by fully connected layers that perform the final classification. Each layer passes its output to the next, enabling progressively more abstract and complex features to be learned as information flows through the network.
 
 \section{Convolutional Layer}
@@ -1106,7 +1108,7 @@ Transformer-based architectures operate on continuous vector representations. Fo
 
 Formally, for an input consisting of \( V \) tokens and an embedding dimension \( d \), the embedding layer is represented by a matrix \( \mathbf{E} \in \mathbb{R}^{V \times d} \).
 
-Given a sequence of input tokens \( \{t_1, t_2, \ldots, t_n\} \), the corresponding embedding vectors \( \{\mathbf{x}_1, \mathbf{x}_2, \ldots, \mathbf{x}_n\} \) are obtained by indexing into the embedding matrix:
+Given a sequence of input tokens \( \{t_1, t_2, \ldots, t_n\} \), the corresponding embedding vectors \( \{\mathbf{x}_1, \ldots, \mathbf{x}_n\} \) are obtained by indexing into the embedding matrix:
 \[
 \mathbf{x}_i = \mathbf{E}[t_i] \in \mathbb{R}^d
 \]
@@ -1146,7 +1148,7 @@ where \( \mathbf{x} \) denotes the input embedding and \( \mathbf{P} \) is the p
 
 Encoder blocks serve as the fundamental building blocks of transformers. Inputs of each block have the same dimensionality as the outputs, making it possible to stack these block one aster another. The general hope is that each such block will encode some learned information about the relationships between embedded input tokens into its output.
 
-\subsubsecton{Attention}
+\subsubsection{Attention}
 
 \begin{figure}[h]
     \centering
@@ -1236,7 +1238,7 @@ Each encoder block consists of a multi-head attention mechanism, the outputs of 
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.1\textwidth]{src/transformerEncoder.pdf}
+    \includegraphics[width=0.17\textwidth]{src/transformerEncoder.pdf}
     \caption{Visual representation of a full transformer. \cite{Vaswani2017Attention}}
     \label{fig:transformerEncoder}
 \end{figure}

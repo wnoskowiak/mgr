@@ -1,47 +1,82 @@
 This is BibTeX, Version 0.99d
 Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
 The top-level auxiliary file: mgr.aux
-I found no \bibdata command---while reading file mgr.aux
-I found no \bibstyle command---while reading file mgr.aux
-You've used 24 entries,
-            0 wiz_defined-function locations,
-            128 strings with 1081 characters,
-and the built_in function-call counts, 0 in all, are:
-= -- 0
-> -- 0
-< -- 0
-+ -- 0
-- -- 0
-* -- 0
-:= -- 0
-add.period$ -- 0
-call.type$ -- 0
-change.case$ -- 0
+Reallocating 'name_of_file' (item size: 1) to 6 items.
+The style file: abbrv.bst
+Reallocating 'name_of_file' (item size: 1) to 11 items.
+Database file #1: references.bib
+Warning--entry type for "transformerBlockSingle" isn't style-file defined
+--line 149 of file references.bib
+Warning--entry type for "deepLearningRoundup2025" isn't style-file defined
+--line 167 of file references.bib
+Warning--entry type for "ViTFUllGraph" isn't style-file defined
+--line 253 of file references.bib
+Warning--entry type for "resConn" isn't style-file defined
+--line 287 of file references.bib
+I was expecting a `,' or a `}'---line 337 of file references.bib
+ :   urldate   = {2025-07-08} 
+ :                            % The date you accessed the resource
+I'm skipping whatever remains of this entry
+I was expecting a `,' or a `}'---line 357 of file references.bib
+ :   urldate   = {2025-07-08} 
+ :                            % The date you accessed the resource
+I'm skipping whatever remains of this entry
+Warning--entry type for "Iqbal2018PlotNeuralNet" isn't style-file defined
+--line 385 of file references.bib
+You're missing a field name---line 397 of file references.bib
+ :   url       = {https://doi.org/10.5281/zenodo.2526396}, 
+ :                                                         % Zenodo DOI landing page
+I'm skipping whatever remains of this entry
+You're missing a field name---line 431 of file references.bib
+ :   author    = {{Google LLC}}, 
+ :                               % Or specific authors if named on the page
+I'm skipping whatever remains of this entry
+I was expecting a `,' or a `}'---line 497 of file references.bib
+ :   urldate   = {2025-07-08} 
+ :                            % Optional: Date you accessed the resource
+I'm skipping whatever remains of this entry
+Warning--entry type for "MlBasics" isn't style-file defined
+--line 503 of file references.bib
+Warning--empty chapter and pages in WeakInteraction
+You've used 32 entries,
+            2118 wiz_defined-function locations,
+            697 strings with 9095 characters,
+and the built_in function-call counts, 9880 in all, are:
+= -- 907
+> -- 542
+< -- 2
++ -- 219
+- -- 184
+* -- 667
+:= -- 1680
+add.period$ -- 93
+call.type$ -- 32
+change.case$ -- 185
 chr.to.int$ -- 0
-cite$ -- 0
-duplicate$ -- 0
-empty$ -- 0
-format.name$ -- 0
-if$ -- 0
+cite$ -- 33
+duplicate$ -- 319
+empty$ -- 780
+format.name$ -- 184
+if$ -- 2042
 int.to.chr$ -- 0
-int.to.str$ -- 0
-missing$ -- 0
-newline$ -- 0
-num.names$ -- 0
-pop$ -- 0
-preamble$ -- 0
-purify$ -- 0
+int.to.str$ -- 32
+missing$ -- 20
+newline$ -- 159
+num.names$ -- 64
+pop$ -- 242
+preamble$ -- 1
+purify$ -- 156
 quote$ -- 0
-skip$ -- 0
+skip$ -- 254
 stack$ -- 0
-substring$ -- 0
-swap$ -- 0
-text.length$ -- 0
+substring$ -- 465
+swap$ -- 49
+text.length$ -- 2
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 0
-warning$ -- 0
-while$ -- 0
-width$ -- 0
-write$ -- 0
-(There were 2 error messages)
+type$ -- 124
+warning$ -- 1
+while$ -- 81
+width$ -- 34
+write$ -- 327
+(There were 5 error messages)

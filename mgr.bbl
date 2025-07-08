@@ -1,0 +1,183 @@
+\begin{thebibliography}{10}
+
+\bibitem{DUNE}
+B.~Abi, R.~Acciarri, and M.~A.~A. ...
+\newblock Deep underground neutrino experiment (dune), far detector technical
+  design report, volume i: Introduction to dune, 2020.
+
+\bibitem{MicroBooNEDesign}
+R.~Acciarri, C.~Adams, R.~An, and .~Aparicio.
+\newblock Design and construction of the microboone detector.
+\newblock {\em Journal of Instrumentation}, 12(02):P02017–P02017, Feb. 2017.
+
+\bibitem{mplGraphEG}
+H.~Afan, A.~Ibrahem Ahmed~Osman, Y.~Essam, A.-M. Ali Najah~Ahmed, Y.~Huang,
+  O.~Kisi, M.~Sherif, A.~Sefelnasr, K.~Chau, and A.~El-Shafie.
+\newblock Modeling the fluctuations of groundwater level by employing ensemble
+  deep learning techniques.
+\newblock {\em Engineering Applications of Computational Fluid Mechanics},
+  15:1420--1439, 09 2021.
+
+\bibitem{resConn}
+A.~Ahmadova, I.~Huseynov, and Y.~Ibrahimov.
+\newblock Improving pneumonia diagnosis with radimagenet: A deep transfer
+  learning approach, 07 2023.
+
+\bibitem{WeakInteraction}
+A.~Bettini.
+\newblock {\em Weak Interactions}.
+\newblock Cambridge University Press, 2024.
+
+\bibitem{NeutrionoOscillationsHistory}
+S.~Bilenky.
+\newblock Neutrino oscillations: From a historical perspective to the present
+  status.
+\newblock {\em Nuclear Physics B}, 908:2--13, 2016.
+\newblock Neutrino Oscillations: Celebrating the Nobel Prize in Physics 2015.
+
+\bibitem{root}
+R.~Brun and F.~Rademakers.
+\newblock {ROOT — An object oriented data analysis framework}.
+\newblock {\em Nuclear Instruments and Methods in Physics Research A},
+  389:81--86, 1997.
+
+\bibitem{CloudxLabEmbeddings}
+{CloudxLab}.
+\newblock Understanding embeddings and matrices with the help of sentiment
+  analysis and llms (hands-on).
+\newblock CloudxLab Blog, may 2024.
+
+\bibitem{ViTFUllGraph}
+M.~Dai, J.~Hu, J.~Zhuang, and E.~Zheng.
+\newblock A transformer-based feature segmentation and region alignment method
+  for uav-view geo-localization, 01 2022.
+
+\bibitem{neutrinoFeynmann}
+F.~F. Deppisch.
+\newblock Neutrino oscillations.
+\newblock In {\em A Modern Introduction to Neutrino Physics}, 2053-2571, pages
+  3--1 to 3--27. Morgan \& Claypool Publishers, 2019.
+
+\bibitem{ViT}
+A.~Dosovitskiy, L.~Beyer, A.~Kolesnikov, D.~Weissenborn, X.~Zhai,
+  T.~Unterthiner, M.~Dehghani, M.~Minderer, G.~Heigold, S.~Gelly, J.~Uszkoreit,
+  and N.~Houlsby.
+\newblock An image is worth 16x16 words: Transformers for image recognition at
+  scale.
+\newblock {\em arXiv preprint arXiv:2010.11929}, 2020.
+
+\bibitem{softmaxRef}
+"endolith".
+\newblock Comment on "why there is no exact picture of softmax activation
+  function".
+\newblock
+  \url{https://datascience.stackexchange.com/questions/57005/why-there-is-no-exact-picture-of-softmax-activation-function},
+  n.d.
+\newblock Accessed: 2025-07-08.
+
+\bibitem{GoogleDevelopersROCAUC}
+{Google LLC}.
+
+\bibitem{ROCEG}
+M.~Hammouda, A.~Awadallah, and R.~Abdel-Maguid.
+\newblock Extension of the geomorphic flood index classifier to predict flood
+  inundation maps for uncalibrated rainfall depths in arid regions.
+\newblock {\em Natural Hazards}, 120:1--23, 01 2024.
+
+\bibitem{Iqbal2018PlotNeuralNet}
+H.~Iqbal.
+\newblock Harisiqbal88/plotneuralnet.
+
+\bibitem{MlBasics}
+A.~Jung.
+\newblock Machine learning: The basics, 05 2018.
+
+\bibitem{neutrinoDarkMatter}
+J.~Kopp.
+\newblock Sterile neutrinos as dark matter candidates.
+\newblock {\em SciPost Physics Lecture Notes}, Jan. 2022.
+
+\bibitem{AlexNETpub}
+A.~Krizhevsky, I.~Sutskever, and G.~E. Hinton.
+\newblock Imagenet classification with deep convolutional neural networks.
+\newblock {\em Commun. ACM}, 60(6):84–90, May 2017.
+
+\bibitem{Kubo2024Transformer}
+H.~Kubo.
+\newblock Understanding transformer sinusoidal position embedding.
+\newblock Medium, dec 2024.
+
+\bibitem{Lau2023LearningDS}
+S.~Lau, J.~Gonzalez, and D.~Nolan.
+\newblock {\em Learning Data Science}.
+\newblock O'Reilly Media, 2023.
+
+\bibitem{LeNet}
+Y.~Lecun, L.~Bottou, Y.~Bengio, and P.~Haffner.
+\newblock Gradient-based learning applied to document recognition.
+\newblock {\em Proceedings of the IEEE}, 86:2278 -- 2324, 12 1998.
+
+\bibitem{ubooneOpenSamples}
+{MicroBooNE Collaboration}.
+\newblock Opensamples: Microboone public lartpc data and analysis resources.
+\newblock \url{https://github.com/uboone/OpenSamples}, 2023.
+\newblock Accessed: 2025-07-08.
+
+\bibitem{CNNExplained}
+K.~O'Shea and R.~Nash.
+\newblock An introduction to convolutional neural networks.
+\newblock {\em CoRR}, abs/1511.08458, 2015.
+
+\bibitem{raschkaRelu}
+S.~Raschka.
+\newblock What is the derivative of the relu activation function?, n.d.
+\newblock Accessed: 2025-07-08.
+
+\bibitem{deepLearningRoundup2025}
+N.~Raynor.
+\newblock What and how does deep learning work?, Apr. 2025.
+\newblock Accessed: 2025-07-08.
+
+\bibitem{hdf5}
+{The HDF Group}.
+\newblock {Hierarchical Data Format, version 5}.
+\newblock \url{https://www.hdfgroup.org/solutions/hdf5/}.
+\newblock Accessed: 2025-06-29.
+
+\bibitem{Vaswani2017Attention}
+A.~Vaswani, N.~Shazeer, N.~Parmar, J.~Uszkoreit, L.~Jones, A.~N. Gomez,
+  {\L}.~Kaiser, and I.~Polosukhin.
+\newblock Attention is all you need.
+\newblock In {\em Advances in Neural Information Processing Systems 30 (NIPS
+  2017)}, pages 5998--6008, 2017.
+
+\bibitem{Yamashita2018}
+R.~Yamashita, M.~Nishio, R.~K.~G. Do, and K.~Togashi.
+\newblock Convolutional neural networks: an overview and application in
+  radiology.
+\newblock {\em Insights into Imaging}, 9(4):611--629, 2018.
+
+\bibitem{exCNN}
+Z.~Yang, T.~Dan, and Y.~Yang.
+\newblock Multi-temporal remote sensing image registration using deep
+  convolutional features.
+\newblock {\em IEEE Access}, PP:1--1, 07 2018.
+
+\bibitem{activations}
+Z.~Yang, T.~Dan, and Y.~Yang.
+\newblock Multi-temporal remote sensing image registration using deep
+  convolutional features.
+\newblock {\em IEEE Access}, PP:1--1, 07 2018.
+
+\bibitem{neutrinoAnomally}
+C.~Zhang, X.~Qian, and M.~Fallot.
+\newblock Reactor antineutrino flux and anomaly.
+\newblock {\em Progress in Particle and Nuclear Physics}, 136:104106, Mar.
+  2024.
+
+\bibitem{transformerBlockSingle}
+Z.~Zhou, J.~Liu, Z.~Gu, and G.~Sun.
+\newblock Energon: Towards efficient acceleration of transformers using dynamic
+  sparse attention, 10 2021.
+
+\end{thebibliography}
