@@ -55,6 +55,10 @@
         "-y=defaultIndent:'    '"
     ],
     "cSpell.words": [
-        "downsampled"
+        "backpropagation",
+        "Conv",
+        "Convolutional",
+        "downsampled",
+        "sublayer"
     ]
 }

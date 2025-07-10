@@ -77,15 +77,13 @@
 
 \nralbumu{417909}
 
-\title{Event classification in liquid argon time projection chambers using neural networks}
+\title{Classification of Neutrino Interactions in Liquid Argon Time Projection Chambers Using Neural Networks}
 
-\tytulang{Klasyfikacja zdarzeń w komorach projekcyjnych z ciekłym argonem przy użyciu sieci neuronowych}
+\tytulang{Klasyfikacja oddziaływań neutrin w ciekłoargonowych komorach projekcji czasowej}
 
 \kierunek{Physics}
 
-%\specjalnosc{Metody jądrowe w fizyce ciała stałego}
-
-\opiekun{\\dr hab. Katarzyna Grzelak\\ Institute of Experimental Physics\\ Faculty of Physics, University of Warsaw\\\vspace{0.3cm plus 1.5fill}\\dr hab. Artur Kalinowski\\ Institute of Experimental Physics\\ Faculty of Physics, University of Warsaw \\}
+\opiekun{\\dr hab. Katarzyna Grzelak\\ Institute of Experimental Physics\\ Faculty of Physics, University of Warsaw\\\vspace{0.3cm plus 1.5fill}\\dr hab. Artur Kalinowski, prof. UW\\ Institute of Experimental Physics\\ Faculty of Physics, University of Warsaw \\}
 
 %\dziedzina{13.200}
 \dziedzina{13.2 Fizyka}
@@ -115,13 +113,13 @@ The objective of this thesis was to evaluate the effectiveness of deep learning 
 
 \chapter*{Introduction}
 
-Neutrinos are fundamental particles that come in three known types (also referred to as flavors). They interact only via the weak nuclear force, making them difficult to detect. In the late 1960s, experiments observed a deficit in the number of solar neutrinos, which was later explained by the phenomenon of neutrino oscillations, which have since been the subject of extensive experimental and theoretical investigation\cite{NeutrionoOscillationsHistory}. The mechanism by which neutrinos acquire mass remains unknown, since their masses have not yet been measured.
+Neutrinos are fundamental particles that come in three known types (also referred to as flavors). They interact only via the weak nuclear force, making them difficult to detect. In the late 1960s, experiments observed a deficit in the number of solar neutrinos, which was later explained by the phenomenon of neutrino oscillations, which have since been the subject of extensive experimental and theoretical investigation\cite{NeutrionoOscillationsHistory}. The mechanism by which neutrinos acquire mass remains unknown, and their masses have not yet been measured.
 
-In addition, several experimental anomalies have been reported that deviate from the predictions of the three-flavor neutrino oscillation model. These include results from the LSND and MiniBooNE experiments, as well as the reactor neutrino anomaly. In all cases, the observed number of neutrinos does not align with the expectations derived from standard oscillation models\cite{neutrinoAnomally}.
+In addition, several experimental anomalies have been reported that deviate from the predictions of the three-flavor neutrino oscillation model\cite{neutrinoAnomally}. These include results from the LSND and MiniBooNE\cite{MiniBooNE}\cite{LSND} experiments, as well as the reactor antineutrino anomaly\cite{neutrinoAnomally}. In all cases, the observed number of neutrinos does not align with the expectations derived from standard oscillation model\cite{neutrinoAnomally}.
 
 One possible explanation for these discrepancies involves extending the current model by introducing additional neutrino flavors. In particular, the hypothesis of sterile neutrinos — neutrinos that do not interact via the weak nuclear force—has been proposed. If such a hypothesis were to be confirmed, it would require an extension of the Standard Model of particle physics. These potential non-interactive neutrinos have even been considered as potential candidates for dark matter\cite{neutrinoDarkMatter}.
 
-Neutrino oscillations—both standard and non-standard—have so far been studied primarily using water or ice based Cherenkov detectors and scintillation detectors. More recently, liquid argon (LAr) detectors have started being more commonly deployed. One of the largest currently operating LAr detectors is the 170-ton MicroBooNE detector at Fermilab, which was built primarily to investigate the excess of electron neutrino events observed in the MiniBooNE experiment. At the same time, MicroBooNE serves as a testbed for the future large-scale (planned 40 kt) LAr detector—DUNE. (A more detailed discussion of DUNE will be presented in Chapter 2.)
+Neutrino oscillations—both standard and non-standard—have so far been studied primarily using water or ice based Cherenkov detectors and scintillation detectors. More recently, liquid argon (LAr) detectors have started being more commonly deployed. One of the largest currently operating LAr detectors is the 170-ton MicroBooNE detector at Fermilab, which was built primarily to investigate the excess of electron neutrino events observed in the MiniBooNE experiment. At the same time, MicroBooNE serves as a testbed for the future large-scale (planned 40 kt) LAr detector—DUNE.
 
 These detectors offer superior spatial resolution to their predecessors, and efficient analysis and interpretation of data produced by the aforementioned detectors still poses a set of open problems, efficient 
 identification and classification of different types of neutrino interactions being one of them. 
@@ -130,24 +128,24 @@ In this work, a selection of machine learning methods (namely convolutional neur
 
 \chapter{Neutrinos}
 
-\section{Iterations}
+\section{Interactions}
 
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.55\textwidth]{src/xfig1_3nu.pdf}
-    \caption{Feynman diagram illustrating neutrino interactions.\cite{neutrinoFeynmann}}
+    \caption{Feynman diagram illustrating neutrino interactions, Courtesy of Katarzyna Grzelak}
     \label{fig:Feynman_diagram_neutrino}
 \end{figure}
 
-Neutrinos are electrically neutral, spin-$\frac{1}{2}$ elementary particles that belong to the lepton family within the Standard Model of particle physics. They exist in three distinct flavors, corresponding to the three charged leptons: the electron neutrino ($\nu_e$), the muon neutrino ($\nu_\mu$), and the tau neutrino ($\nu_\tau$).\cite{neutrinoFeynmann}
+Neutrinos are electrically neutral, spin-$\frac{1}{a2}$ elementary particles that belong to the lepton family within the Standard Model of particle physics. They exist in three distinct flavors, corresponding to the three charged leptons: the electron neutrino ($\nu_e$), the muon neutrino ($\nu_\mu$), and the tau neutrino ($\nu_\tau$).\cite{neutrinoFeynmann}
 
 These flavor classifications arise from the weak decay processes mediated by the $W$ boson, in which a charged lepton is produced alongside a corresponding neutrino. For instance, in a $W^-$ decay producing an electron, an electron neutrino is emitted; similarly, decays yielding a muon or tau lepton produce a muon or tau neutrino, respectively.
 
 Due to their lack of electric charge, negligible mass, and absence of color charge, neutrinos interact with matter only via the weak nuclear force. This interaction occurs through two fundamental mechanisms: neutral current interactions, mediated by the electrically neutral $Z^0$ boson, and charged current interactions, mediated by the charged $W^+$ or $W^-$ bosons. Feynman diagrams of these interactions are shown in figure~\ref{fig:Feynman_diagram_neutrino}.
 
-In charged current interactions, the neutrino exchanges a $W$ boson with a target particle, resulting in the production of a charged lepton of the same flavor, which enables neutrino flavor identification. In contrast, neutral current interactions involve the exchange of a $Z^0$ boson and therefore do not produce a charged lepton. The neutriono flavour cannot therefore be deduced from the final state.
+In charged current interactions, the neutrino exchanges a $W$ boson with a target particle, resulting in the production of a charged lepton of the same flavor, which enables neutrino flavor identification. In contrast, neutral current interactions involve the exchange of a $Z^0$ boson and therefore do not produce a charged lepton. The neutrino flavour cannot therefore be deduced from the final state.
 
-The weak interaction is characterized by a very short range, typically on the order of $10^{-17}$ to $10^{-18}$ meters\cite{WeakInteraction}, which makes neutrino interactions with matter extremely rare. As a result, detecting neutrinos requires either very intense neutrino beams and/or very large detectors to observe a statistically significant number of interactions.
+The weak interaction is characterized by a very short range, typically of the order of $10^{-17}$ to $10^{-18}$ meters\cite{WeakInteraction}, which makes neutrino interactions with matter extremely rare. As a result, detecting neutrinos requires either very intense neutrino beams and/or very large detectors to observe a statistically significant number of interactions.
 
 \section{Liquid Argon Detectors}
 
@@ -171,7 +169,7 @@ When a neutrino interacts with an argon nucleus, it produces charged particles t
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.9\textwidth]{src/wireimageIM.png}
-    \caption{Example of noise patterns in lartcp detectors, taken from microBooNe \cite{ubooneOpenSamples}}
+    \caption{Example of noise patterns in LArTPC detectors, taken from MicroBooNe \cite{ubooneOpenSamples}}
     \label{fig:noise}
 \end{figure}
 
@@ -188,7 +186,7 @@ Neutrino interactions are not the only source of signals in the detector. Cosmic
     \label{fig:microboone_birdseye}
 \end{figure}
 
-The MicroBooNE experiment began operation at Fermilab in 2015 and currently functions as the middle detector in the Short-Baseline Neutrino (SBN) program. Its primary scientific goal is to investigate the source of the excess of electron neutrino-like events observed in the predominantly muon neutrino beam by the MiniBooNE experiment. Its exact placement in the BNB (Booster Neutrino Beam), located 470~m from the neutrino source, is shown in Figure~\ref{fig:microboone_birdseye}. The BNB delivers neutrinos with energies in the range of 0.5–2~GeV.
+The MicroBooNE experiment began operation at Fermilab in 2015 and currently functions as the middle detector in the Short-Baseline Neutrino (SBN) program. Its primary scientific goal is to investigate the source of the excess of electron neutrino-like events observed in the predominantly muon neutrino beam by the MiniBooNE experiment. It's located 470~m from the neutrino source in the BNB (Booster Neutrino Beam, shown in Figure~\ref{fig:microboone_birdseye}). The BNB delivers neutrinos with energies in the range of 0.5–2~GeV.
 
 MicroBooNE is based on a 170-ton liquid-argon TPC, enclosed in a cryostat and depicted in Figure~\ref{fig:microboone_layout}. Of this total argon mass, 89 tonnes form the active volume. Its general operating principle is strictly analogous to the one described by Figure~\ref{fig:lartcp}, with three sets of parallel wires serving the role of anode planes. The detector is located on the Fermilab site, as shown in Figure~\ref{fig:microboone_birdseye}. Key design parameters are summarized in Table~\ref{tab:microboone_specs}\cite{MicroBooNEDesign}.
 
@@ -216,7 +214,7 @@ Wire configuration & 3 anode wire planes \\
                    & 3 mm spacing between wires \\
                    & 3 mm spacing between planes \\
 \hline
-Total liquid argon mass & 170 tonnes \\
+Total liquid argon mass & 89 tonnes \\
 \hline
 Operating temperature & 87 K \\
 \hline
@@ -234,7 +232,7 @@ Depth & 6 m \\
     \label{fig:microboone_layout}
 \end{figure}
 
-\subsection{Publicly available datasets}
+\subsection{Publicly Available Datasets}
 
 Two MicroBooNE datasets are opened to the public. They contain simulated neutrino interactions overlaid on top of cosmic ray data. These datasets were provided to support the development of new computational techniques for neutrino event reconstruction and analysis, primarily with DUNE in mind. They will be discussed in greater detail in the next chapter.
 
@@ -248,11 +246,11 @@ There are two main types of data samples: "with wires" and "no wires." The "with
 
 \section{Events Present}
 
-\subsection{\texorpdfstring{$\nu_e$}{νₑ}-Enhanced Sample Description}
+\subsection{BNB Sample}
 
-The distributions of lepton and neutrino energies for the two datasets are shown in Figures~\ref{fig:lepton-inclusive}--\ref{fig:neutrino-nue}. 
+The BNB (Booster Neutrino Beam, Inclusive) sample consists of 24,332 events, containing a broader mix of neutrino types. The majority are muon neutrinos (23,984), followed by smaller numbers of muon antineutrinos (208 with PDG code $-14$), electron neutrinos (134 with PDG code 12), and electron antineutrinos (6 with PDG code $-12$). Of the total, 17,564 events are classified as charged-current (CC), while 6,768 are neutral-current (NC) interactions. Within the charged-current subset, 17,457 events originate from muon neutrinos or antineutrinos, and 107 from electron neutrinos or antineutrinos, indicating a dominance of muon neutrino interactions in this sample.
 
-The $\nu_e$-enhanced sample consists of 19,940 events, containing a broader mix of neutrino types. The majority are muon neutrinos (23,984), followed by smaller numbers of muon antineutrinos (208 with PDG code $-14$), electron neutrinos (134 with PDG code 12), and electron antineutrinos (6 with PDG code $-12$). Of the total, 17,564 events are classified as charged-current (CC), while 6,768 are neutral-current (NC) interactions. Within the charged-current subset, 17,457 events originate from muon neutrinos or antineutrinos, and 107 from electron neutrinos or antineutrinos, indicating a dominance of muon neutrino interactions in this sample.
+The distributions of lepton and neutrino energies for the BNB sample are shown in Figures~\ref{fig:lepton-inclusive}--\ref{fig:neutrino-inclusive}.
 
 \begin{figure}[H]
     \centering
@@ -272,11 +270,9 @@ The energy distribution of neutrino interactions in this sample has a mean value
 
 The associated charged lepton energy distribution exhibits a mean of 0.69~GeV, a median of 0.57~GeV, and a standard deviation of 0.50~GeV. The lepton energies range from 0.01~GeV to 5.67~GeV. These characteristics reflect a relatively high-energy subset of interactions, with lepton energy distributions concentrated in the sub-GeV to low-GeV range.
 
-\subsection{BNB sample}
+\subsection{\texorpdfstring{$\nu_e$}{νₑ}-Enhanced Sample Description}
 
-The distributions for the $\nu_e$-enhanced sample are shown in Figures~\ref{fig:lepton-nue} and~\ref{fig:neutrino-nue}.
-
-The BNB (Booster Neutrino Beam, Inclusive) sample contains a total of 24,332 events, all of which are classified as charged-current (CC) interactions. The dataset is composed exclusively of electron neutrinos and antineutrinos, with 19,448 events corresponding to neutrinos (PDG code 12) and 492 to antineutrinos (PDG code $-12$). No muon neutrinos (PDG 14 or $-14$) are present.
+The $\nu_e$-enhanced sample sample contains a total of 19,940 events, all of which are classified as charged-current (CC) interactions. The dataset is composed exclusively of electron neutrinos and antineutrinos, with 19,448 events corresponding to neutrinos (PDG code 12) and 492 to antineutrinos (PDG code $-12$). No muon neutrinos (PDG 14 or $-14$) are present.
 
 \begin{figure}[H]
     \centering
@@ -294,6 +290,8 @@ The BNB (Booster Neutrino Beam, Inclusive) sample contains a total of 24,332 eve
 
 
 The energy distribution shows a mean of 1.20~GeV, a median of 1.08~GeV, and a standard deviation of 0.67~GeV, with values ranging from 0.06~GeV to 6.61~GeV. The corresponding charged lepton energy distribution has a mean of 0.91~GeV, a median of 0.73~GeV, and a standard deviation of 0.67~GeV. Lepton energies range from 0.01~GeV to 5.82~GeV. This distribution suggests a slightly lower-energy spectrum on average, but with a broader mix of interaction types and moderate lepton energy variability.
+
+The distributions for the $\nu_e$-enhanced sample are shown in Figures~\ref{fig:lepton-nue} and~\ref{fig:neutrino-nue}.
 
 \subsection{Combined Dataset}
 
@@ -368,7 +366,7 @@ Because of their smaller size, HDF5 files were used for the initial data extract
 
 The final extracted dataset consisted of a CSV file containing the composite event ID (run number, subrun number, and event number), neutrino energy, and the \texttt{is\_cc} value from the event table, as well as the \texttt{PDG} of the interacting neutrino. Another file matching the same composite ID with the lepton energy was also created. These were later joined during processing. Additionally, it included the filenames of three image files, each corresponding to one of the three wire planes. These images were generated from the wire readouts and represent visualizations of the recorded signals.
 
-\subsection{Data extraction}
+\subsection{Data Extraction}
 
 Data from the \texttt{wire\_table}, \texttt{edep\_table}, and \texttt{lep\_table} was first matched with corresponding events in the \texttt{event\_table} (this was largely based on the code present in the Wireimage.ipynb notebook provided by the authors of the dataset). From each matched record, the lepton energy was extracted from the \texttt{lep\_table}, the neutrino energy from the \texttt{edep\_table}, and the \texttt{is\_cc} value from the \texttt{event\_table}. The \texttt{wire\_table} was used to obtain the wire signals for each event. It was subsequently processed into images, and linked to the corresponding event metadata for downstream analysis.
 
@@ -388,7 +386,7 @@ The final dataset consisted 132,816 PNG images, each representing a wire readout
 
 \section{Further Dataset Processing}
 
-\subsection{Sparse array representation}
+\subsection{Sparse Array Representation}
 
 \begin{figure}[H]
     \centering
@@ -408,13 +406,14 @@ Although the final image dataset occupied approximately 13~GB on disk, this was 
 \end{figure}
 
 During development, it was observed that the processed images contained mostly empty (zero-value) pixels. While tracks were present in all images, they typically occupied only a small portion of each image—approximately 5\% of the total pixels. (Note: Mention that the threshold used during the generation of wire images was sufficiently low to eliminate noise.) As a result, the decision was made to represent the images using sparse arrays (implemented with \texttt{torch.sparse}) Unlike dense arrays, where each element is stored explicitly in memory, sparse arrays assume a default value for all positions and store only the non-zero values along with their coordinates. Although these sparse arrays still need to be converted to dense format before being passed to the CNN, this conversion is significantly less costly than loading and decompressing images from disk. This optimization led to a substantial reduction in memory usage—by up to a factor of 70—making it feasible to load the entire dataset into RAM. The magnitude of those size reductions are shown in Figures~\ref{fig:memRedTot} and~\ref{fig:memRedAvg}.
-\subsection{File count reduction}
 
-The final dataset contained a significant amount of files - namely approximately 120,000 image files. This created issues similar to those previously encountered when working with Miniconda—namely, the operaing system configurations used on ICM rysy and topola clusters used for CNN training imposed quotas on the number of files each user could allocate. Operating under an account close to that limit proved to be cumbersome. Notably, the total dataset size remained well below the storage quota in terms of bytes, indicating that reducing the number of files could resolve the problem without affecting overall storage usage.
+\subsection{File Count Reduction}
+
+The final dataset contained a significant amount of files - namely approximately 120,000 image files. This created issues similar to those previously encountered when working with Miniconda—namely, the operating system configurations used on ICM rysy and topola clusters used for CNN training imposed quotas on the number of files each user could allocate. Operating under an account close to that limit proved to be cumbersome. Notably, the total dataset size remained well below the storage quota in terms of bytes, indicating that reducing the number of files could resolve the problem without affecting overall storage usage.
 
 To address both issues, each CSV file was loaded into a pandas DataFrame. Three additional columns were added to each record—one for each image associated with an event—and populated with the corresponding sparse arrays. Each resulting dataset was then saved as a single \texttt{.pkl} file, a format that preserves Python objects as they exist in memory. In total, 38 .pkl files were created, each corresponding to one original HDF5 file and containing all events and associated images from that file. The combined size of all \texttt{.pkl} files was approximately 32~GB, which corresponds closely to the amount of memory required to load them into RAM.
 
-\chapter{Classification Task definition}
+\section{Classification Task definition}
 
 \begin{figure}[H]
 \centering
@@ -429,7 +428,7 @@ To address both issues, each CSV file was loaded into a pandas DataFrame. Three 
     \label{tab:dataset_stats}
     \begin{tabular}{lccc}
         \toprule
-        \textbf{Dataset} & \textbf{Total No. of Events} & \textbf{Background} & \textbf{Signal $\mu_e$ } \\
+        \textbf{Dataset} & \textbf{Total No. of Events} & \textbf{Background} & \textbf{Signal $\nu_e$ } \\
         \midrule
         Full Dataset     & 44,272                 & 24,225 & 20,047 \\
         \texttt{top50} Dataset & 22,136                 & 10,739 & 11,397 \\
@@ -453,7 +452,7 @@ All information from this section was taken from \cite{MlBasics}.
 
 Machine learning algorithms aim to find a mapping from a specific set of points in an input space to a corresponding set of points in an output space, both of which are predefined. These algorithms define a procedure for learning such a mapping based on a given set of input-output pairs, commonly referred to as the training data. Once learned, this mapping can be applied to all points in the input space, including those not included in the training set. The general expectation is that the mapping learned from the training data will generalize well to previously unseen data, enabling the algorithm to make accurate predictions or classifications on new inputs.
 
-\section{Supervised machine learning}
+\section{Supervised Machine Learning}
 
 The problems tackled in this work are classification problems, where the input space consists of images of wire readouts, and the output space consists of a binary label. The common way of tackling such problems is supervised machine learning.
 In supervised machine learning, the training data is given in the form of input-target pairs \( \{(\mathbf{x}_i, y_i)\}_{i=1}^N \), where \( \mathbf{x}_i \in \mathbb{R}^d \) represents the feature vector of the \( i \)-th input and \( y_i \in \mathcal{Y} \) is the corresponding target value. The aim is to learn a function \( f: \mathbb{R}^d \rightarrow \mathcal{Y} \) that approximates the true relationship between inputs and outputs.
@@ -465,7 +464,7 @@ f(\mathbf{x}_i) \approx y_i \quad \forall i \in \{1, \dots, N\}
 
 \section{Machine Learning Models}
 
-\subsection{ML model definition and learnable Parameters}
+\subsection{ML Model Definition and Learnable Parameters}
 
 The term machine learning model mentioned further in the work will refer to a pairing of a set of learnable parameters \( \boldsymbol{\theta} \in \mathbb{R}^p \), where \( p \) is the total number of parameters, and a model function \( f(\mathbf{x}; \boldsymbol{\theta}) \) which maps the input space to the output space. The learnable parameters \( \boldsymbol{\theta} \) are variables within the model that can be adjusted during the training process to minimize the difference between the model's predictions and the actual target values. They have a direct influence on the model's output.
 
@@ -478,7 +477,7 @@ The training process begins by setting all elements of \( \boldsymbol{\theta} \)
 
 These predictions are then compared to the true labels \( \mathbf{y} \in \mathbb{R}^b \), and the parameters \( \boldsymbol{\theta} \) are updated to reduce the discrepancy. This step is repeated iteratively, refining \( \boldsymbol{\theta} \) over time to improve predictive performance. Each such update constitutes a learning step, and the entire iterative process is referred to as model training.
 
-\subsection{Neural networks}
+\subsection{Neural Networks}
 
 \begin{figure}[H]
 \centering
@@ -533,7 +532,7 @@ The Softmax function is used in the output layer of classification networks to c
 \sigma(\mathbf{z})_i = \frac{e^{z_i}}{\sum_{j=1}^{C} e^{z_j}} \quad \text{for } i = 1, \dots, C
 \]
 
-This property makes it well-suited for multi-class classification tasks, where each input must be assigned a single label. It's general behaviour can be seen in figure~\ref{fig:softmax}.
+This property makes it well-suited for multi-class classification tasks, where each input must be assigned a single label. It's general behavior can be seen in figure~\ref{fig:softmax}.
 
 \subsection{Loss Function}
 
@@ -545,7 +544,7 @@ The quality of the model's predictions is assessed using a loss function
 
 Here $y$ stands for the true target value, while \( \hat{y} = f(\mathbf{x}; \boldsymbol{\theta}) \) is the model's prediction for a given input \( \mathbf{x} \).
 
-The role of this function is to quantify the difference between predicted and true outputs. By assumtion the value of the loss function is non-negative, with lower values indicating better model performance (the outputs of the model are given ).
+The role of this function is to quantify the difference between predicted and true outputs. By assumption the value of the loss function is non-negative, with lower values indicating better model performance (the outputs of the model are given ).
 
 The choice of an optimal loss function is problem-specific but, regardless of the choice, the goal is to minimize the loss function with respect to the model parameters:
 
@@ -671,7 +670,7 @@ Normalizing the matrix enables interpretation in terms of proportions, helping t
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.5\textwidth]{src/roc-curveUp.jpg}
-    \caption{Visualization of the ROC curve. The x-axis represents the false positive rate (FPR), while the y-axis represents the true positive rate (TPR). The diagonal line represents a random classifier, whil the linies above it represent classifiers with varying levels of performance\cite{ROCEG}.}
+    \caption{Visualization of the ROC curve. The x-axis represents the false positive rate (FPR), while the y-axis represents the true positive rate (TPR). The diagonal line represents a random classifier, e the lines above it represent classifiers with varying levels of performance\cite{ROCEG}.}
     \label{fig:roc_curve}
 \end{figure}
 
@@ -785,7 +784,7 @@ In classical CNN architectures, the output of the final convolution or pooling l
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.7\textwidth]{src/lenet.pdf}
-    \caption{Schematic architecture of a simple convolutional neural network (CNN). Each 3D block represents a data tensor at a given stage of the network. The width and height of the blocks reflect the spatial resolution of feature maps, while the depth indicates the number of channels (e.g., filters in convolutional layers or neurons in fully connected layers). The color changes distinguish between different types of operations: convolution (yellow), activation/pooling (red), flattening (transition to vector), and fully connected layers (blue). Purple represents a softmax layer. The numbers next to the blocks denote either the number of output channels or neurons or the spatial dimensions\cite{Iqbal2018PlotNeuralNet}.}
+    \caption{Schematic architecture of a simple convolutional neural network (CNN). Each 3D block represents a data tensor at a given stage of the network. The width and height of the blocks reflect the spatial resolution of feature maps, while the depth indicates the number of channels (e.g., filters in convolutional layers or neurons in fully connected layers). The color changes distinguish between different types of operations: convolution (yellow), activation/pooling (red), flattening (transition to vector - green), and fully connected layers (blue). Purple represents a softmax layer. The numbers next to the blocks denote either the number of output channels or neurons or the spatial dimensions\cite{Iqbal2018PlotNeuralNet}.}
     \label{fig:cnn_architecture}
 \end{figure}
 
@@ -793,11 +792,11 @@ The first layers of the neural network consist of a hierarchy of convolution and
 
 During training, the network first attempts to classify a batch of input elements. The predicted output is then compared to the true class labels, and a loss value is computed. This loss is subsequently backpropagated through the network, and the gradients for all learnable parameters are calculated. Finally, a step of gradient descent is performed, and the learnable parameters are updated accordingly.
 
-\section{Networks used}
+\section{Networks Used}
 
 Two different architectures were used to classify the images, specifics of which are described below. Both networks were trained on the same dataset, with the same hyperparameters, to ensure a fair comparison of their respective performance.
 
-\subsection{LeNet-like network}
+\subsection{LeNet-like Network}
 
 \begin{figure}[H]
     \centering
@@ -860,7 +859,7 @@ MaxPool2d (pool3) & - & 3×3 & 2 & 0 \\
 
 Another architecture utilized was a modified version of the AlexNet model, originally developed for the ImageNet Large Scale Visual Recognition Challenge (ILSVRC). The general hope being that the fact that it's significantly deeper and wider than LeNet would enable classify the images more effectively\cite{AlexNETpub}.
 
-This architecture is summarized in Table~\ref{tab:alexnet_architecture} and visualized in figure~\ref{fig:alexnetLike_architecture}.
+This architecture is summarized in Table~\ref{tab:alexcnn_layers} and visualized in figure~\ref{fig:alexnetLike_architecture}.
 
 \subsection{Training Procedure}
 
@@ -874,26 +873,17 @@ The dataset was split into training, validation, and test sets in a 70/15/15 rat
 
 \begin{figure}[H]
     \centering
-    \begin{subfigure}{\textwidth}
-        \centering
-        \includegraphics[width=0.9\textwidth]{src/LeNET_1ch_full_dataset_scale033.png}
-        % \caption{Caption for the first image}
-        \label{fig:Lefull33sub1}
-    \end{subfigure}
-    
-    \vspace{1cm}
-    
-    \begin{subfigure}{\textwidth}
-        \centering
-        \includegraphics[width=0.9\textwidth]{src/LeNET_1ch_full_dataset_scale033loss.png}
-        % \caption{Caption for the second image}
-        \label{fig:Lefull33sub2}
-    \end{subfigure}
+    \includegraphics[width=0.9\textwidth]{src/LeNET_1ch_full_dataset_scale033.png}
+    \caption{LeNET training results on the full dataset with images scaled down to 0.33 of their original size.}
+    \label{fig:Lefull33stacked2}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{src/LeNET_1ch_full_dataset_scale033loss.png}
     \caption{LeNET training results on the full dataset with images scaled down to 0.33 of their original size.}
     \label{fig:Lefull33stacked}
 \end{figure}
-
-\newpage
 
 % \begin{figure}[H]
 %     \centering
@@ -964,28 +954,28 @@ The dataset was split into training, validation, and test sets in a 70/15/15 rat
 
 % \newpage
 
-Best achieved training results for the LeNet-like network are presented in Figure \ref{fig:Letop5033stacked}. The network was unable to learn any meaningful features from the data, as evidenced by the fact that it classified all events as background events. The resulting ROC curve (Figure~\ref{fig:Lefull33sub1}) lies close to the diagonal, indicating that the classifier performs no better than random guessing. The training loss did not decrease and simply oscillated around a constant value. The classification accuracy remained close to 0.5 for all runs. It can be reasonably concluded that the network did not learn any non-trivial features from the data, and training was completely unsuccessful.
+Best achieved training results for the LeNet-like network are presented in Figures\ref{fig:Lefull33stacked} \ref{fig:Lefull33stacked2}. The network was unable to learn any meaningful features from the data, as evidenced by the fact that it classified all events as background events. The resulting ROC curve (Figure~\ref{fig:Lefull33stacked2}) lies close to the diagonal, indicating that the classifier performs no better than random guessing. The training loss did not decrease and simply oscillated around a constant value. The classification accuracy remained close to 0.5 for all runs. It can be reasonably concluded that the network did not learn any non-trivial features from the data, and training was completely unsuccessful.
 
 \subsection{AlexNet}
 
-Training results for the AlexNet-like network are presented in Figures~\ref{fig:full33stacked}, \ref{fig:full5sub1}, \ref{fig:top5033stacked}, and \ref{fig:top5005stacked}. Overall, the network was able to achieve satisfactory results for all datasets and scaling factors. The performance metrics achieved for each training suggest that some non-trivial underlying patterns were learned by the network. Training loss behaved as expected—decreasing steadily, with the rate of change becoming smaller with each epoch. Classification accuracy increased over the course of training.
+Training results for the AlexNet-like network are presented in Figures~\ref{fig:full33stacked}, \ref{fig:full5stacked}, \ref{fig:top5033stacked}, and \ref{fig:top5005stacked}. Overall, the network was able to achieve satisfactory results for all datasets and scaling factors. The performance metrics achieved for each training suggest that some non-trivial underlying patterns were learned by the network. Training loss behaved as expected—decreasing steadily, with the rate of change becoming smaller with each epoch. Classification accuracy increased over the course of training.
 
 In all cases, AlexNet-based networks performed better at classifying non-CC events than CC events (the number of false positives in the latter case was greater in every training). Increasing the scale factor of the input image did increase the network's performance, but not in a very significant way. Most of the improvement came from reducing the number of false negatives for electron neutrino interactions.
 
 \begin{figure}[H]
     \centering
-    \begin{subfigure}{\textwidth}
+    \begin{subfigure}{0.9\textwidth}
         \centering
-        \includegraphics[width=0.9\textwidth]{src/AlexCNN_1ch_full_dataset_scale033.png}
+        \includegraphics[width=\textwidth]{src/AlexCNN_1ch_full_dataset_scale033.png}
         % \caption{Caption for the first image}
         \label{fig:full33sub1}
     \end{subfigure}
     
     \vspace{1cm}
     
-    \begin{subfigure}{\textwidth}
+    \begin{subfigure}{0.9\textwidth}
         \centering
-        \includegraphics[width=0.9\textwidth]{src/AlexCNN_1ch_full_dataset_scale0.33loss.png}
+        \includegraphics[width=\textwidth]{src/AlexCNN_1ch_full_dataset_scale0.33loss.png}
         % \caption{Caption for the second image}
         \label{fig:full33sub2}
     \end{subfigure}
@@ -997,18 +987,18 @@ In all cases, AlexNet-based networks performed better at classifying non-CC even
 
 \begin{figure}[H]
     \centering
-    \begin{subfigure}{\textwidth}
+    \begin{subfigure}{0.9\textwidth}
         \centering
-        \includegraphics[width=0.9\textwidth]{src/AlexCNN_1ch_full_dataset_scale05.png}
+        \includegraphics[width=\textwidth]{src/AlexCNN_1ch_full_dataset_scale05.png}
         % \caption{Caption for the first image}
         \label{fig:full5sub1}
     \end{subfigure}
     
     \vspace{1cm}
     
-    \begin{subfigure}{\textwidth}
+    \begin{subfigure}{0.9\textwidth}
         \centering
-        \includegraphics[width=0.9\textwidth]{src/AlexCNN_1ch_full_dataset_scale05loss.png}
+        \includegraphics[width=\textwidth]{src/AlexCNN_1ch_full_dataset_scale05loss.png}
         % \caption{Caption for the second image}
         \label{fig:full5sub2}
     \end{subfigure}
@@ -1020,18 +1010,18 @@ In all cases, AlexNet-based networks performed better at classifying non-CC even
 
 \begin{figure}[H]
     \centering
-    \begin{subfigure}{\textwidth}
+    \begin{subfigure}{0.9\textwidth}
         \centering
-        \includegraphics[width=0.9\textwidth]{src/AlexCNN_1ch_top50_dataset_scale033.png}
+        \includegraphics[width=\textwidth]{src/AlexCNN_1ch_top50_dataset_scale033.png}
         % \caption{Caption for the first image}
         \label{fig:top5033sub1}
     \end{subfigure}
     
     \vspace{1cm}
     
-    \begin{subfigure}{\textwidth}
+    \begin{subfigure}{0.9\textwidth}
         \centering
-        \includegraphics[width=0.9\textwidth]{src/AlexCNN_1ch_top50_dataset_scale033loss.png}
+        \includegraphics[width=\textwidth]{src/AlexCNN_1ch_top50_dataset_scale033loss.png}
         % \caption{Caption for the second image}
         \label{fig:top5033sub2}
     \end{subfigure}
@@ -1043,18 +1033,18 @@ In all cases, AlexNet-based networks performed better at classifying non-CC even
 
 \begin{figure}[H]
     \centering
-    \begin{subfigure}{\textwidth}
+    \begin{subfigure}{0.9\textwidth}
         \centering
-        \includegraphics[width=0.9\textwidth]{src/AlexCNN_1ch_top50_dataset_scale0.5.png}
+        \includegraphics[width=\textwidth]{src/AlexCNN_1ch_top50_dataset_scale0.5.png}
         % \caption{Caption for the first image}
         \label{fig:top5005sub1}
     \end{subfigure}
     
     \vspace{1cm}
     
-    \begin{subfigure}{\textwidth}
+    \begin{subfigure}{0.9\textwidth}
         \centering
-        \includegraphics[width=0.9\textwidth]{src/AlexCNN_1ch_top50_dataset_scale05losses.png}
+        \includegraphics[width=\textwidth]{src/AlexCNN_1ch_top50_dataset_scale05losses.png}
         % \caption{Caption for the second image}
         \label{fig:top5005sub2}
     \end{subfigure}
@@ -1064,7 +1054,7 @@ In all cases, AlexNet-based networks performed better at classifying non-CC even
 
 \newpage
 
-\subsection{discussion}
+\subsection{Discussion}
 
 As noted before, the LeNet-like network was unable to learn any meaningful features from the data, while the AlexNet-like network performed relatively well on all datasets. This outcome could have been somewhat expected, as LeNet is significantly less complex and shallower than AlexNet, which limits its ability to learn complex features from the data. It may be possible that the learning results could be improved by adjusting the training parameters, but the complete lack of performance suggests that it is not well-suited for the classification task at hand.
 
@@ -1083,19 +1073,13 @@ Taking into account the high accuracy of the AlexNet-like network, it can be rea
 
 The transformer is a deep learning architecture introduced for processing sequential data\cite{Vaswani2017Attention}. Unlike convolutional neural networks (CNNs), which use local receptive fields to capture spatial features, Transformers attend to the entire input sequence simultaneously.
 
-The core components of the Transformer include multi-head self-attention layers, residual connections, and layer normalization. The architecture is composed of repeated encoder blocks, each consisting of an attention sublayer followed by a deep neural network and normalization components (see Figure~\ref{fig:transformerEncoder}).
-
-Transformer architecture was adapted to later works to a number of tasks, including image classification \cite{ViT}. In this chapter, applications of these adaptations will be explored.
-
-Inputs to the transformer are first passed through an embedding layer, and positional encodings are added to the embeddings to retain information about the order of tokens in the sequence. These embeddings are then passed through a number of encoder blocks, each consisting of multi-head self-attention and linear layers, with the output of one block serving as the input to the next. The final output is a sequence of continuous vectors, which can then be processed by a decoder or used directly for tasks such as classification or regression.
-
-
+Transformer architecture was adapted to a number of tasks, including image classification \cite{ViT}. In this chapter, applications of these adaptations will be explored.
 
 \section{Elements of the Transformer Architecture}
 
 \subsection{Embeddings}
 
-\subsubsection{general mechanism}
+\subsubsection{General Mechanism}
 
 \begin{figure}[h]
     \centering
@@ -1108,14 +1092,14 @@ Transformer-based architectures operate on continuous vector representations. Fo
 
 Formally, for an input consisting of \( V \) tokens and an embedding dimension \( d \), the embedding layer is represented by a matrix \( \mathbf{E} \in \mathbb{R}^{V \times d} \).
 
-Given a sequence of input tokens \( \{t_1, t_2, \ldots, t_n\} \), the corresponding embedding vectors \( \{\mathbf{x}_1, \ldots, \mathbf{x}_n\} \) are obtained by indexing into the embedding matrix:
+Given a sequence of input tokens \( \{t_1, t_2, \ldots, t_n\} \), as well as the corresponding embedding vectors \( \{\mathbf{x}_1, \ldots, \mathbf{x}_n\} \) are obtained by indexing into the embedding matrix:
 \[
 \mathbf{x}_i = \mathbf{E}[t_i] \in \mathbb{R}^d
 \]
 
 The embedding matrix consists of trainable parameters and is optimized jointly with the rest of the model. The goal of this mapping is to project discrete inputs into a continuous space where meaningful relationships can be learned during training.
 
-\subsubsection{Positional encoding}
+\subsubsection{Positional Encoding}
 
 \begin{figure}[H]
     \centering
@@ -1131,8 +1115,8 @@ The embedding matrix consists of trainable parameters and is optimized jointly w
         PE(pos, 2i + 1) &= \cos\left(\frac{pos}{10000^{\frac{2i}{d_{\text{model}}}}}\right)
         \end{align*}
     \end{minipage}
-    \label{fig:positionalEncoding}
     \caption{Example of how positional encoding can be handled. The heatmap at the top visually represents a positional encoding for 128-dimensional vectors. Each row corresponds to a position in the input sequence, and each column represents a dimension within the embedding vector. The color gradient signifies the value of the positional encoding at that specific position and dimension. The equations at the bottom define the sinusoidal functions used to compute the positional encoding for each position \( pos \) and dimension \( i \) in the embedding vector.\cite{Kubo2024Transformer}}
+    \label{fig:positionalEncoding}
 \end{figure}
 
 The sinusoidal positional encoding and its heatmap representation are shown in the diagram in Figure~\ref{fig:positionalEncoding}.
@@ -1153,7 +1137,7 @@ Encoder blocks serve as the fundamental building blocks of transformers. Inputs 
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.4\textwidth]{src/scaledDotProd.png}
-    \caption{Graphic representation of a single attention head. The input query, key, and value matrices are passed through a scaled dot-product attention mechanism, which computes attention scores and produces the output.\cite{Vaswani2017Attention}}
+    \caption{Graphic representation of a single attention head. The input query, key, and value matrices are passed through a scaled dot-product attention mechanism, which computes attention scores and produces the output\cite{Vaswani2017Attention}.}
     \label{fig:singleAttentionHead}
 \end{figure}
 
@@ -1170,7 +1154,7 @@ Finally, these weights are used to compute a weighted sum of the value vectors, 
 \text{Attention}(Q, K, V) = \text{weights} \cdot V
 \]
 
-\subsubsection{Multi-head attention}
+\subsubsection{Multi-head Attention}
 
 \begin{figure}[h]
     \centering
@@ -1202,7 +1186,7 @@ The matrices \( W^Q_i \), \( W^K_i \), \( W^V_i \), and \( W^O \) consist of tra
 
 A visual overview of the multi-head attention mechanism is provided in Figure~\ref{fig:multiHeadAttention}.
 
-\subsubsection{Residual connections and layer normalization}
+\subsubsection{Residual Connections and Layer Normalization}
 
 \begin{figure}[h]
     \centering
@@ -1211,19 +1195,17 @@ A visual overview of the multi-head attention mechanism is provided in Figure~\r
     \label{fig:resCon}
 \end{figure}
 
-In order to stabilize learning Transformers commonly apply residual connections around some of their sublayers.
+In order to stabilize learning Transformers commonly apply residual connections around some of their sublayers\ref{fig:resCon}.
 
 These connections, when given an input \( \mathbf{x} \) and a sublayer function \( \text{Sublayer}(\cdot) \), compute the output as:
 \[
 \text{LayerNorm}(\mathbf{x} + \text{Sublayer}(\mathbf{x}))
 \]
 
-\ref{fig:resCon}
-
 Implementation of these layers was empirically shown to improve convergence and performance of the model.
 
 
-\subsubsection{Full transformer block}
+\subsubsection{Full Transformer Block}
 
 \begin{figure}[h]
     \centering
@@ -1240,7 +1222,7 @@ Each encoder block consists of a multi-head attention mechanism, the outputs of 
     \centering
     \includegraphics[width=0.17\textwidth]{src/transformerEncoder.pdf}
     \caption{Visual representation of a full transformer. \cite{Vaswani2017Attention}}
-    \label{fig:transformerEncoder}
+    \label{fig:transformerFull}
 \end{figure}
 
 Inputs to the transformer are first passed through an embedding layer, and positional encodings are added to the embeddings. These embeddings are then passed through a number of encoder blocks, with the output of one block serving as the input to the next.
@@ -1257,11 +1239,11 @@ The image transformer extends the standard transformer architecture to process v
 
 \subsubsection{Classification Token}
 
-To enable image-level classification, a special token known as the classification token, or [CLS] token, is prepended to the sequence of patch embeddings \ref. This token does not represent any specific region of the image and is initialized as a trainable vector. Throughout the transformer layers, it interacts with other tokens via the attention.
+To enable image-level classification, a special token known as the classification token, or [CLS] token, is prepended to the sequence of patch embeddings. This token does not represent any specific region of the image and is initialized as a trainable vector. Throughout the transformer layers, it interacts with other tokens via the attention.
 
 The general hope is that though these interactions it will gradually aggregate global information about the entire image. The [CLS] token is trained jointly with the model to optimize performance on the target classification task.
 
-\subsubsection{Positional Encoding for image patches}
+\subsubsection{Positional Encoding for Image Patches}
 
 \begin{figure}[h]
     \centering
@@ -1291,47 +1273,43 @@ After processing through all transformer layers, the final output corresponding 
 
 The transformer architecture adapted for images is illustrated in Figure~\ref{fig:visNetArch}.
 
-\section{Transformer architecture used}
+\section{Transformer Architecture Used}
 
-The specific transformer image transformer that ended up being used was largely based on the implementation kindly provided by professor Artur Kalinowski. Just like the one originally proposed in \cite{ViT} it divided images into patches of 16x16 pixels each. Each patch is mapped to a 32-dimensional embedding vector. Positional encoding is applied using sine and cosine functions across the embedding dimensions. The model includes a single multi-head self-attention layer with two heads to capture relationships between patches. A final three-layer multilayer perceptron consisted of layer sizes of 32, 16, and 2 neurons respectively.
+The specific transformer image transformer that ended up being used was largely based on the implementation kindly provided by prof. Artur Kalinowski. Just like the one originally proposed in \cite{ViT} it divided images into patches of 16x16 pixels each. Each patch is mapped to a 32-dimensional embedding vector. Positional encoding is applied using sine and cosine functions across the embedding dimensions. The model includes a single multi-head self-attention layer with two heads to capture relationships between patches. A final three-layer multilayer perceptron consisted of layer sizes of 32, 16, and 2 neurons respectively.
 
-\subsection{Training procedure}
+\subsection{Training Procedure}
 
 This time, both the transformer itself as well as the training routine were implemented in tensorflow. For simplicity, the transformer only trained on the top50 dataset. Training was run for 10 epochs using a dataset split into training and validation batches. The validation set consisted of 1000 batches taken from the dataset, while the rest was used for training. An Adam optimizer with an exponentially decaying learning rate starting at 0.001 was used, with the learning rate decreasing by 5\% every 10 full passes through the training data. The model optimized a binary cross-entropy loss. Training incorporated early stopping, halting if the validation accuracy did not improve for 10 consecutive epochs.
 
-\section{Transformer training results and evaluation}
+\section{Transformer Training Results and Evaluation}
 
 \begin{figure}[H]
     \centering
+    \includegraphics[width=0.7\textwidth]{src/tranformerMatrixFinal.png}
+    \caption{Transformer confusion matrix}
+    \label{fig:tranformerMatrixFinal}
+\end{figure}
 
-    \begin{minipage}[t]{0.8\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{src/tranformerMatrixFinal.png}
-        
-        % \caption{Caption 3}
-    \end{minipage}
-
-    \vspace{1cm}
-
-    \begin{minipage}[t]{0.48\textwidth}
+\begin{figure}[H]
+    \centering
+    \begin{minipage}[t]{0.7\textwidth}
         \centering
         \includegraphics[width=\textwidth]{src/transformerLoss.png}
         % \caption{Caption 1}
     \end{minipage}
     \hfill
-    \begin{minipage}[t]{0.48\textwidth}
+    \begin{minipage}[t]{0.7\textwidth}
         \centering
         \includegraphics[width=\textwidth]{src/transformerROCurve.png}
         % \caption{Caption 2}
     \end{minipage}
-    \caption{Transformer training results. The left image shows the normalized confusion matrix, the middle image shows the ROC curve, and the right image shows the training loss over epochs.}
+    \caption{Transformer training results. The top image shows the normalized confusion matrix, the middle image shows the ROC curve, and the bottom image shows the training loss over epochs.}
     \label{fig:tranformerResults}
 \end{figure}
 
-
 \subsection{Training Summary}
 
-Details of the training process are summarized in Figure~\ref{fig:tranformerResults}. The neural network was trained for 10 epochs using an exponentially decaying learning rate schedule. The final training loss reached 0.5839, with a training accuracy of 69.04\%. Validation performance at the end of training showed a loss of 0.6139 and an accuracy of 66.00\%, which was also the best recorded validation accuracy.
+Details of the training process are summarized in Figure~\ref{fig:tranformerResults}\ref{fig:tranformerMatrixFinal}. The neural network was trained for 10 epochs using an exponentially decaying learning rate schedule. The final training loss reached 0.5839, with a training accuracy of 69.04\%. Validation performance at the end of training showed a loss of 0.6139 and an accuracy of 66.00\%, which was also the best recorded validation accuracy.
 
 Testing on the held-out dataset yielded a final loss of 0.6218 and an accuracy of 66.03\%, indicating consistent generalization performance.
 
@@ -1343,17 +1321,17 @@ During training, the loss decreased by 12.0\%, and accuracy improved by 9.75 per
 
 \begin{table}[H]
     \centering
+    \caption{Performance metrics for the transformer.}
     \begin{tabular}{lc}
         \toprule
         \textbf{Metric} & \textbf{Value} \\
         \midrule
-        Precision (CC e) & 0.6773 \\
-        Recall (CC e)    & 0.6442 \\
+        Precision (CC $\nu_e$) & 0.6773 \\
+        Recall (CC $\nu_e$)    & 0.6442 \\
         F1 Score (overall) & 0.6603 \\
         AUC-ROC Score (overall) & 0.7207 \\
         \bottomrule
     \end{tabular}
-    \caption{Performance metrics for the transformer.}
     \label{tab:cc_metrics}
 \end{table}
 
@@ -1370,9 +1348,9 @@ The transformer's poorer performance is somewhat expected. The training set was 
 This thesis explored the application of machine learning techniques—specifically convolutional neural networks (CNNs) and image transformers—to the task of classifying neutrino interactions within Liquid Argon Time Projection Chambers (LArTPCs), using the MicroBooNE OpenSamples dataset. The main classification goal was to distinguish charged current (CC) electron neutrino interactions from other types of events.
 
 The initial approach involved a LeNet-like architecture, which failed to learn any meaningful features from the data, resulting in poor classification performance.
-A variation on AlexNet achived significantly better results, acheiving an accuracies as high 85.97\%.
+A variation on AlexNet achieved significantly better results, achieving an accuracies as high as 85.97\%.
 
-An image transformer architecture was also evaluated. Although its performance was lower than that of the AlexNet-like model, it still achieved an accuracy of 66.03\% on the test set. This can be largely explained by the relatively small size of the training dataset, as transformers typically require larger datasets to outperform CNNs. The performance achived by the transformer suggests that introduction of a larger dataset could well lead to improved results.
+An image transformer architecture was also evaluated. Although its performance was lower than that of the AlexNet-like model, it still achieved an accuracy of 66.03\% on the test set. This can be largely explained by the relatively small size of the training dataset, as transformers typically require larger datasets to outperform CNNs. The performance achieved by the transformer suggests that introduction of a larger dataset could well lead to improved results.
 
 The results obtained throughout the thesis strongly suggest that the classification of neutrino interactions in LArTPCs is a solvable problem using deep learning approaches. Further improvements could likely be achieved through training on larger datasets, using more complex model architectures, and optimizing training parameters.
 
@@ -1387,7 +1365,7 @@ Additionally, incorporating signals from other wire planes could enhance model p
 \newpage
 
 % \section*{Bibliography}
-\bibliographystyle{abbrv}
+\bibliographystyle{unsrt}
 \bibliography{references}
 \newpage
 
@@ -1400,7 +1378,8 @@ The complete structure of the HDF5 tables used in the MicroBooNE OpenSamples dat
 
 \begin{table}[H]
 \centering
-\begin{tabular}{|l|p{10.5cm}|}
+\caption{Summary of tables and their contents in the detector data model.}
+\begin{tabular}{|l|p{10.0cm}|}
 \hline
 \textbf{Table Name} & \textbf{Description} \\
 \hline
@@ -1427,7 +1406,6 @@ The complete structure of the HDF5 tables used in the MicroBooNE OpenSamples dat
 \texttt{/wire\_table} & Records full waveform data for each detector wire over 6400 time ticks. Provides raw ADC values for hit reconstruction. Only in ``With Wire'' datasets. \\
 \hline
 \end{tabular}
-\caption{Summary of tables and their contents in the detector data model.}
 \label{tab:data_tables}
 \end{table}
 
